@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySQL Workbench — Komplett SQL-referanse</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1117;--bg2:#161b25;--bg3:#1e2535;--bg4:#252d40;
+  --border:rgba(99,120,180,.18);--border2:rgba(99,120,180,.32);
+  --accent:#4f8ef7;--green:#3bcf9a;--amber:#f7c948;--red:#f07070;--purple:#c070f0;
+  --text:#e2e8f8;--text2:#8fa0c0;--text3:#5a6a88;
+  --code:#111620;--font:'Segoe UI',system-ui,sans-serif;--mono:'Cascadia Code','Fira Code',Consolas,monospace
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border2);padding:14px 22px 0;position:sticky;top:0;z-index:100}
+.htop{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,#e67e22,#c0392b);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;letter-spacing:-.5px}
+.logo-text{font-size:15px;font-weight:600}
+.logo-sub{font-size:11px;color:var(--text3)}
+.sw{flex:1;position:relative}
+.si{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.kh{position:absolute;right:11px;top:50%;transform:translateY(-50%);display:flex;gap:3px}
+.kbd{background:var(--bg4);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-size:10px;color:var(--text3);font-family:var(--mono)}
+#search{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:9px 76px 9px 38px;color:var(--text);font-size:14px;outline:none;transition:border-color .15s}
+#search::placeholder{color:var(--text3)}
+#search:focus{border-color:var(--accent)}
+.rc{font-size:11px;color:var(--text3);white-space:nowrap;flex-shrink:0}
+.rw{display:none;padding:3px 0 8px;align-items:center;gap:5px;flex-wrap:wrap}
+.rw.vis{display:flex}
+.rl{font-size:11px;color:var(--text3)}
+.rchip{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:2px 9px;font-size:11px;color:var(--text2);cursor:pointer;transition:all .12s}
+.rchip:hover{border-color:var(--accent);color:var(--accent)}
+.rclear{font-size:10px;color:var(--text3);cursor:pointer;margin-left:2px}
+.rclear:hover{color:var(--red)}
+.fr{display:flex;gap:4px;overflow-x:auto;padding-bottom:9px;scrollbar-width:none;flex-wrap:wrap}
+.fr::-webkit-scrollbar{display:none}
+.fdiv{width:1px;height:16px;background:var(--border2);flex-shrink:0;margin:0 2px;align-self:center}
+.fb{background:transparent;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .12s;font-family:var(--font)}
+.fb:hover{border-color:var(--border2);color:var(--text)}
+.fb.act{background:var(--accent);border-color:var(--accent);color:#fff}
+.fb.d1{color:var(--green);border-color:rgba(59,207,154,.3)}.fb.d1.act{background:#1a5c40;border-color:var(--green);color:#fff}
+.fb.d2{color:var(--amber);border-color:rgba(247,201,72,.3)}.fb.d2.act{background:#5c4a10;border-color:var(--amber);color:#fff}
+.fb.d3{color:var(--red);border-color:rgba(240,112,112,.3)}.fb.d3.act{background:#5c1010;border-color:var(--red);color:#fff}
+.tips{background:var(--bg3);border-bottom:1px solid var(--border);padding:6px 22px;font-size:11px;color:var(--text3);display:flex;gap:16px;overflow-x:auto;scrollbar-width:none}
+.tips::-webkit-scrollbar{display:none}
+.tip{white-space:nowrap;cursor:pointer}.tip:hover span{color:var(--accent)}.tip span{color:var(--text2);transition:color .1s}
+.main{display:grid;grid-template-columns:255px 1fr;min-height:calc(100vh - 146px)}
+.sb{border-right:1px solid var(--border);padding:10px 0;overflow-y:auto;max-height:calc(100vh - 146px);position:sticky;top:146px}
+.sbs{margin-bottom:2px}
+.sbt{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:7px 16px 3px}
+.sbi{padding:5px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .1s;border-left:2px solid transparent}
+.sbi:hover{background:var(--bg3)}.sbi.act{background:var(--bg3);border-left-color:var(--accent)}
+.sbn{font-family:var(--mono);font-size:11.5px;color:var(--text2)}.sbi.act .sbn{color:var(--accent)}
+.sbd{display:flex;gap:2px}.sbdot{width:5px;height:5px;border-radius:50%}
+.ct{padding:18px 26px}
+.entry{background:var(--bg2);border:1px solid var(--border);border-radius:11px;margin-bottom:12px;overflow:hidden;transition:border-color .15s;cursor:pointer}
+.entry:hover{border-color:var(--border2)}.entry.exp{border-color:var(--accent)}
+.eh{padding:13px 16px;display:flex;align-items:flex-start;gap:11px;user-select:none}
+.el{flex-shrink:0;display:flex;flex-direction:column;gap:4px;align-items:flex-start;margin-top:1px}
+.badge{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;padding:3px 7px;border-radius:5px;white-space:nowrap}
+.dd{display:flex;gap:2px}.ddot{width:6px;height:6px;border-radius:50%}
+.em{flex:1;min-width:0}
+.etitle{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px}
+.edesc{font-size:13px;color:var(--text2);line-height:1.5}
+.etags{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tag{font-size:11px;background:var(--bg4);color:var(--text3);border-radius:3px;padding:2px 6px}
+.earr{color:var(--text3);font-size:12px;flex-shrink:0;margin-top:3px;transition:transform .15s}
+.entry.exp .earr{transform:rotate(90deg)}
+.ebody{display:none;border-top:1px solid var(--border)}.entry.exp .ebody{display:block}
+.es{padding:13px 16px;border-bottom:1px solid var(--border)}.es:last-child{border-bottom:none}
+.esl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:7px}
+.wl{font-size:13px;color:var(--text2);line-height:1.6}.wl li{margin-left:15px;margin-bottom:2px}
+pre{background:var(--code);border:1px solid var(--border);border-radius:7px;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.7;overflow-x:auto;color:var(--text);margin-bottom:5px;position:relative}
+pre:last-child{margin-bottom:0}
+.exlbl{font-size:11px;color:var(--text3);margin:9px 0 2px}
+.cpbtn{position:absolute;top:7px;right:7px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:2px 7px;font-size:10px;color:var(--text3);cursor:pointer;font-family:var(--font);transition:all .1s}
+.cpbtn:hover{color:var(--text);border-color:var(--accent)}.cpbtn.ok{color:var(--green);border-color:var(--green)}
+.kw{color:#79b8ff}.fn{color:#b392f0}.str{color:#9ecbff}.num{color:#f8c555}.cmt{color:#4a5568;font-style:italic}
+.relwrap{display:flex;flex-wrap:wrap;gap:5px}
+.relchip{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-size:11px;color:#7aabff;cursor:pointer;font-family:var(--mono);transition:all .12s}
+.relchip:hover{border-color:var(--accent);color:var(--accent)}
+.pflist{display:flex;flex-direction:column;gap:4px}
+.pfitem{background:rgba(240,112,112,.08);border:1px solid rgba(240,112,112,.2);border-radius:5px;padding:7px 10px;font-size:12.5px;color:var(--red);display:flex;gap:7px}
+.notebox{background:rgba(247,201,72,.08);border:1px solid rgba(247,201,72,.2);border-radius:5px;padding:8px 12px;font-size:12.5px;color:var(--amber);line-height:1.5}
+.theory{font-size:13px;color:var(--text2);line-height:1.7}
+.theory h4{color:var(--text);font-size:13px;font-weight:600;margin:11px 0 5px}
+.theory p{margin-bottom:8px}.theory ul{margin-left:17px;margin-bottom:8px}.theory li{margin-bottom:3px}
+.theory .fm{background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:7px 12px;font-family:var(--mono);font-size:12px;color:var(--accent);margin:7px 0}
+.theory strong{color:var(--text)}.theory .ok{color:var(--green)}.theory .bad{color:var(--red)}
+.theory table{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono);margin:8px 0}
+.theory th{background:var(--bg3);padding:6px 10px;text-align:left;border:1px solid var(--border2);color:var(--text)}
+.theory td{padding:5px 10px;border:1px solid var(--border2)}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{display:flex;gap:10px;align-items:flex-start}
+.stepn{background:var(--accent);color:#fff;font-size:11px;font-weight:700;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.stept{font-size:13px;color:var(--text2);line-height:1.5;flex:1}.stept strong{color:var(--text)}
+.empty{text-align:center;padding:80px 20px;color:var(--text3)}
+.ei{font-size:28px;margin-bottom:11px}.et{font-size:15px;color:var(--text2);margin-bottom:5px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+mark{background:rgba(79,142,247,.28);color:var(--accent);border-radius:2px;padding:0 1px}
+.fuzz{font-size:10px;background:rgba(247,201,72,.1);color:var(--amber);border-radius:3px;padding:1px 5px;margin-left:5px}
+.cat-str{background:rgba(80,200,240,.12);color:#50c8f0}
+.cat-sel{background:rgba(79,142,247,.12);color:#7aabff}
+.cat-dml{background:rgba(59,207,154,.1);color:var(--green)}
+.cat-join{background:rgba(160,80,240,.12);color:var(--purple)}
+.cat-agg{background:rgba(240,100,180,.12);color:#f070c0}
+.cat-win{background:rgba(80,200,240,.12);color:#50c8f0}
+.cat-cte{background:rgba(80,180,100,.12);color:#50c870}
+.cat-sub{background:rgba(100,80,240,.12);color:#9080f0}
+.cat-ddl{background:rgba(247,201,72,.1);color:var(--amber)}
+.cat-idx{background:rgba(180,140,80,.12);color:#d4aa50}
+.cat-txn{background:rgba(240,80,80,.1);color:var(--red)}
+.cat-op{background:rgba(200,120,40,.12);color:#e0944a}
+.cat-nrm{background:rgba(40,160,200,.12);color:#50b8d8}
+.cat-er{background:rgba(120,80,200,.12);color:#a070d8}
+.cat-fn{background:rgba(120,120,120,.12);color:#909090}
+</style></head><body>
+<div class="header">
+<div class="htop">
+<div class="logo"><div class="logo-icon">MySQL</div>
+<div><div class="logo-text">MySQL Workbench — SQL-referanse</div>
+<div class="logo-sub">Komplett guide: spørringer · operatorer · normalisering · ER-modeller</div></div></div>
+<div class="sw"><div class="si">⌕</div>
+<input type="text" id="search" placeholder="Søk etter kommando, konsept, eksempel… f.eks. «løpende total», «1NF», «JOIN»" autocomplete="off" spellcheck="false">
+<div class="kh"><span class="kbd">⌘</span><span class="kbd">K</span></div></div>
+<div class="rc" id="count">Laster…</div></div>
+<div class="rw" id="rw"><span class="rl">Nylig:</span><span id="rchips"></span><span class="rclear" id="rclear">Tøm</span></div>
+<div class="fr" id="filters"></div></div>
+<div class="tips" id="tips">
+<span class="tip">Prøv: <span>«løpende total»</span></span>
+<span class="tip"><span>«1NF normalisering»</span></span>
+<span class="tip"><span>«ER nettbutikk»</span></span>
+<span class="tip"><span>«AND OR operatorer»</span></span>
+<span class="tip"><span>«window funksjon»</span></span>
+<span class="tip"><span>«query struktur»</span></span>
+<span class="tip"><span>«REGEXP»</span></span>
+<span class="tip"><span>«JSON MySQL»</span></span></div>
+<div class="main"><div class="sb" id="sidebar"></div><div class="ct" id="content"></div></div>
+
+<script>
+
+const DB=[
+{id:"sql-struktur",cmd:"SELECT — Spørringsstruktur",cat:"str",catLabel:"STRUKTUR",
+desc:"Komplett anatomi for en MySQL SELECT-setning. Klausulrekkefølgen er obligatorisk.",
+tags:["struktur","oppbygging","syntaks","klausuler","anatomi","mal","rekkefølge","query"],
+difficulty:"beginner",related:["utforelse","where","group-by","order-by","limit-offset"],
+pitfalls:["Klausulene MÅ stå i denne rekkefølgen — ORDER BY alltid etter GROUP BY/HAVING.","SELECT-aliaser kan IKKE brukes i WHERE (SELECT kjøres etter WHERE).","MySQL tillater alias i ORDER BY som unntak."],
+when:["Komplett mal:","SELECT [DISTINCT]   kol1, kol2, AGG(kol3) AS alias","FROM                tabell1 [AS t1]","[INNER|LEFT|RIGHT] JOIN tabell2 ON betingelse","WHERE               rad-betingelse","GROUP BY            kol1, kol2","HAVING              gruppe-betingelse","ORDER BY            kol1 [ASC|DESC]","LIMIT               antall [OFFSET start];"],
+examples:[
+{label:"1 · Minimum — alle rader",code:"SELECT * FROM employees;"},
+{label:"2 · Bestemte kolonner",code:"SELECT name, salary, department\nFROM employees;"},
+{label:"3 · Med alias",code:"SELECT name AS navn, salary AS lønn\nFROM employees;"},
+{label:"4 · WHERE-filter",code:"SELECT name, salary\nFROM employees\nWHERE department = 'IT';"},
+{label:"5 · Sortering og grense",code:"SELECT name, salary\nFROM employees\nORDER BY salary DESC\nLIMIT 10;"},
+{label:"6 · GROUP BY + aggregat",code:"SELECT department, COUNT(*) AS ant, AVG(salary) AS snitt\nFROM employees\nGROUP BY department;"},
+{label:"7 · HAVING for grupper",code:"SELECT department, COUNT(*) AS ant\nFROM employees\nGROUP BY department\nHAVING ant > 3;"},
+{label:"8 · INNER JOIN",code:"SELECT e.name, d.dept_name\nFROM employees e\nINNER JOIN departments d ON e.dept_id = d.id\nWHERE e.salary > 50000;"},
+{label:"9 · LEFT JOIN + GROUP BY + HAVING",code:"SELECT d.dept_name, COUNT(e.id) AS ant, AVG(e.salary) AS snitt\nFROM departments d\nLEFT JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name\nHAVING ant > 0\nORDER BY snitt DESC\nLIMIT 10;"},
+{label:"10 · Subquery + CTE + vindufunksjon",code:"WITH avd_snitt AS (\n  SELECT dept_id, AVG(salary) AS snitt\n  FROM employees GROUP BY dept_id\n)\nSELECT e.name, e.salary, a.snitt,\n  RANK() OVER (PARTITION BY e.dept_id ORDER BY e.salary DESC) AS rang\nFROM employees e\nJOIN avd_snitt a ON e.dept_id = a.dept_id\nWHERE e.salary > a.snitt\nORDER BY rang;"}
+]},
+{id:"utforelse",cmd:"SQL Utførelsesrekkefølge",cat:"str",catLabel:"STRUKTUR",
+desc:"MySQL utfører IKKE en SELECT i skriverekkefølgen. Forstå den faktiske rekkefølgen.",
+tags:["utførelse","rekkefølge","eksekusjon","alias","feilmelding"],
+difficulty:"beginner",related:["sql-struktur","where","group-by"],
+theory:"<h4>Faktisk eksekusjonsrekkefølge i MySQL</h4><div class='fm'>① FROM &amp; JOIN → ② WHERE → ③ GROUP BY → ④ HAVING → ⑤ SELECT → ⑥ DISTINCT → ⑦ ORDER BY → ⑧ LIMIT/OFFSET</div><h4>Konsekvenser:</h4><ul><li><strong>FROM/JOIN</strong> kjøres FØRST</li><li><strong>WHERE</strong> kan IKKE bruke aggregater</li><li><strong>HAVING</strong> KAN bruke aggregater</li><li><strong>ORDER BY</strong> kan bruke alias i MySQL (utvidelse)</li><li><strong>LIMIT</strong> kjøres absolutt sist</li></ul>",
+pitfalls:["Alias i WHERE → ERROR.","Aggregater i WHERE → ERROR. Bruk HAVING."],
+when:["① FROM/JOIN","② WHERE — radfilter","③ GROUP BY","④ HAVING — gruppefilter (aggregater OK)","⑤ SELECT","⑥ DISTINCT","⑦ ORDER BY (alias OK)","⑧ LIMIT/OFFSET"],
+examples:[
+{label:"1 · Alias i WHERE — FEIL",code:"-- ❌ FEIL\nSELECT name, salary*12 AS årslønn\nFROM employees\nWHERE årslønn > 600000;  -- ERROR: Unknown column"},
+{label:"2 · Korrekt: original kolonne",code:"SELECT name, salary*12 AS årslønn\nFROM employees\nWHERE salary*12 > 600000;"},
+{label:"3 · Aggregat i WHERE — FEIL",code:"-- ❌ FEIL\nSELECT department, COUNT(*)\nFROM employees\nWHERE COUNT(*) > 3;  -- ERROR"},
+{label:"4 · Korrekt: HAVING",code:"SELECT department, COUNT(*) AS ant\nFROM employees\nGROUP BY department\nHAVING ant > 3;"},
+{label:"5 · ORDER BY kan bruke alias (MySQL)",code:"SELECT name, salary*12 AS årslønn\nFROM employees\nORDER BY årslønn DESC;"},
+{label:"6 · WHERE filtrerer FØR GROUP BY",code:"SELECT department, COUNT(*) AS ant\nFROM employees\nWHERE hire_date >= '2020-01-01'  -- ② FØR gruppering\nGROUP BY department\nHAVING ant > 2;                 -- ④ ETTER gruppering"},
+{label:"7 · LIMIT kjøres absolutt sist",code:"SELECT d.dept_name, COUNT(e.id) AS ant\nFROM departments d\nJOIN employees e ON e.dept_id = d.id\nWHERE e.salary > 50000\nGROUP BY d.dept_name\nHAVING ant > 1\nORDER BY ant DESC\nLIMIT 3;  -- kun 3 rader til slutt"},
+{label:"8 · DISTINCT etter SELECT",code:"SELECT DISTINCT department\nFROM employees\nORDER BY department;"},
+{label:"9 · JOIN er del av FROM-fasen",code:"SELECT e.name, d.dept_name\nFROM employees e\nJOIN departments d ON e.dept_id = d.id  -- ① del av FROM\nWHERE e.salary > 60000;                   -- ② etter JOIN"},
+{label:"10 · Full demonstrasjon",code:"SELECT                              -- ⑤\n  d.dept_name,\n  COUNT(DISTINCT e.id) AS ant,       -- ⑥ DISTINCT\n  AVG(e.salary) AS snitt\nFROM departments d                   -- ①\nLEFT JOIN employees e ON e.dept_id=d.id  -- ①\nWHERE e.hire_date >= '2020-01-01'   -- ②\nGROUP BY d.dept_name                -- ③\nHAVING snitt > 55000                -- ④\nORDER BY ant DESC                   -- ⑦\nLIMIT 5;                            -- ⑧"}
+]},
+{id:"select-cmd",cmd:"SELECT",cat:"sel",catLabel:"SELECT",
+desc:"Hent rader og kolonner fra én eller flere tabeller.",
+tags:["select","les","hent","kolonner","alias","beregnet"],
+difficulty:"beginner",related:["where","distinct","group-by","order-by"],
+pitfalls:["SELECT * i produksjon er kostbart.","Alias kan ikke brukes i WHERE."],
+when:["Les data fra tabeller","Beregn nye kolonner","Kombiner med JOIN/GROUP BY/ORDER BY"],
+examples:[
+{label:"1 · Alle kolonner",code:"SELECT * FROM employees;"},
+{label:"2 · Spesifikke kolonner",code:"SELECT name, salary FROM employees;"},
+{label:"3 · Alias",code:"SELECT name AS navn, salary AS månedslønn\nFROM employees;"},
+{label:"4 · Beregnet kolonne",code:"SELECT name, salary, salary*12 AS årslønn\nFROM employees;"},
+{label:"5 · Tekstoperasjoner",code:"SELECT CONCAT(first_name,' ',last_name) AS fullt_navn,\n  UPPER(email) AS epost\nFROM employees;"},
+{label:"6 · Med WHERE",code:"SELECT name, salary\nFROM employees\nWHERE salary > 60000;"},
+{label:"7 · Med sortering",code:"SELECT name, salary\nFROM employees\nORDER BY salary DESC\nLIMIT 10;"},
+{label:"8 · Beregn og formater",code:"SELECT name,\n  FORMAT(salary, 2) AS lønn,\n  DATE_FORMAT(hire_date,'%d.%m.%Y') AS dato,\n  DATEDIFF(CURDATE(), hire_date) AS dager_ansatt\nFROM employees;"},
+{label:"9 · JOIN to tabeller",code:"SELECT e.name, d.dept_name, e.salary\nFROM employees e\nJOIN departments d ON e.dept_id = d.id\nORDER BY d.dept_name, e.salary DESC;"},
+{label:"10 · Med subquery",code:"SELECT name, salary,\n  ROUND((salary/(SELECT AVG(salary) FROM employees))*100,1) AS pst_av_snitt\nFROM employees\nORDER BY pst_av_snitt DESC;"},
+{label:"11 · CASE for klassifisering",code:"SELECT name, salary,\n  CASE\n    WHEN salary >= 80000 THEN '🔴 Senior'\n    WHEN salary >= 55000 THEN '🟡 Mellom'\n    ELSE '🟢 Junior'\n  END AS nivå\nFROM employees\nORDER BY salary DESC;"}
+]},
+{id:"distinct",cmd:"DISTINCT",cat:"sel",catLabel:"SELECT",
+desc:"Fjern dupliserte rader fra resultatsettet.",
+tags:["distinct","unike","deduplisering","fjern duplikater"],
+difficulty:"beginner",related:["select-cmd","group-by","count"],
+pitfalls:["DISTINCT på flere kolonner sjekker KOMBINASJONEN, ikke enkeltkolonner."],
+when:["Returner unike verdier","Tell antall unike verdier","Fjern duplikater"],
+examples:[
+{label:"1 · Unike avdelinger",code:"SELECT DISTINCT department FROM employees;"},
+{label:"2 · Tell unike",code:"SELECT COUNT(DISTINCT department) AS ant_avd FROM employees;"},
+{label:"3 · Unike byer sortert",code:"SELECT DISTINCT city FROM customers ORDER BY city;"},
+{label:"4 · Unike kombinasjoner",code:"SELECT DISTINCT department, job_title\nFROM employees ORDER BY department, job_title;"},
+{label:"5 · DISTINCT med WHERE",code:"SELECT DISTINCT department\nFROM employees WHERE salary > 60000;"},
+{label:"6 · Unike kategorier fra salg",code:"SELECT DISTINCT p.category\nFROM order_items oi\nJOIN products p ON oi.product_id = p.id\nORDER BY category;"},
+{label:"7 · Unike kunder i 2024",code:"SELECT DISTINCT customer_id\nFROM orders WHERE YEAR(order_date) = 2024;"},
+{label:"8 · DISTINCT med teller (vindu)",code:"SELECT DISTINCT country,\n  COUNT(*) OVER(PARTITION BY country) AS ant\nFROM customers ORDER BY ant DESC;"},
+{label:"9 · NULL vises blant unike",code:"SELECT DISTINCT manager_id\nFROM employees ORDER BY manager_id;"},
+{label:"10 · Finn duplikate e-poster",code:"SELECT email, COUNT(*) AS ant\nFROM users GROUP BY email\nHAVING ant > 1 ORDER BY ant DESC;"}
+]},
+{id:"where",cmd:"WHERE",cat:"sel",catLabel:"SELECT",
+desc:"Filtrer rader basert på betingelser FØR gruppering.",
+tags:["where","filtrer","betingelse","kriterier"],
+difficulty:"beginner",related:["select-cmd","having","between","like","in-list","null-check"],
+pitfalls:["WHERE kjøres FØR GROUP BY — aggregater er IKKE tillatt.","NULL = noe → FALSE alltid. Bruk IS NULL.","Alias fra SELECT er IKKE tilgjengelig i WHERE."],
+when:["Filtrer rader FØR GROUP BY","Kombinér med AND/OR","NULL-sjekk med IS NULL"],
+examples:[
+{label:"1 · Enkel lik",code:"SELECT * FROM employees WHERE department = 'IT';"},
+{label:"2 · Numerisk",code:"SELECT * FROM employees WHERE salary > 60000;"},
+{label:"3 · AND",code:"SELECT name, salary FROM employees\nWHERE department = 'IT' AND salary > 60000;"},
+{label:"4 · OR",code:"SELECT name FROM employees\nWHERE department = 'IT' OR department = 'HR';"},
+{label:"5 · NOT",code:"SELECT * FROM employees WHERE NOT department = 'HR';"},
+{label:"6 · Parenteser styrer logikk",code:"SELECT * FROM employees\nWHERE (department='IT' OR department='Engineering')\n  AND salary BETWEEN 50000 AND 90000;"},
+{label:"7 · Dato-filter",code:"SELECT * FROM orders\nWHERE order_date >= '2024-01-01'\n  AND order_date < '2025-01-01';"},
+{label:"8 · LIKE i WHERE",code:"SELECT * FROM customers\nWHERE email LIKE '%@gmail.com' AND city = 'Oslo';"},
+{label:"9 · Subquery i WHERE",code:"SELECT name, salary FROM employees\nWHERE dept_id IN (SELECT id FROM departments WHERE location='Oslo');"},
+{label:"10 · Kombinert flerfelts-filter",code:"SELECT name, salary, manager_id FROM employees\nWHERE salary > 50000\n  AND hire_date >= '2020-01-01'\n  AND manager_id IS NOT NULL\n  AND department != 'Ledelse'\nORDER BY salary DESC;"}
+]},
+{id:"order-by",cmd:"ORDER BY",cat:"sel",catLabel:"SELECT",
+desc:"Sorter resultatsettet etter én eller flere kolonner.",
+tags:["order by","sorter","stigende","synkende","asc","desc","field"],
+difficulty:"beginner",related:["select-cmd","limit-offset","row-number"],
+pitfalls:["Uten ORDER BY er rekkefølgen UDEFINERT."],
+when:["Sorter output","Topp-N-lister","Egendefinert rekkefølge med FIELD()"],
+examples:[
+{label:"1 · Stigende (standard)",code:"SELECT name, salary FROM employees ORDER BY salary;"},
+{label:"2 · Synkende",code:"SELECT name, salary FROM employees ORDER BY salary DESC;"},
+{label:"3 · Alfabetisk",code:"SELECT name FROM employees ORDER BY name ASC;"},
+{label:"4 · To kolonner",code:"SELECT name, department, salary\nFROM employees ORDER BY department ASC, salary DESC;"},
+{label:"5 · Kolonnenummer",code:"SELECT name, department, salary\nFROM employees ORDER BY 2, 3 DESC;"},
+{label:"6 · Alias (MySQL-utvidelse)",code:"SELECT name, salary*12 AS årslønn\nFROM employees ORDER BY årslønn DESC;"},
+{label:"7 · Beregnet uttrykk",code:"SELECT name, hire_date,\n  DATEDIFF(CURDATE(), hire_date) AS dager\nFROM employees ORDER BY dager DESC;"},
+{label:"8 · NULL sist",code:"SELECT name, manager_id FROM employees\nORDER BY manager_id IS NULL, manager_id;"},
+{label:"9 · FIELD() — egendefinert",code:"SELECT name, status FROM tasks\nORDER BY FIELD(status,'Kritisk','Høy','Normal','Lav');"},
+{label:"10 · ORDER BY med vindufunksjon",code:"SELECT * FROM (\n  SELECT name, department, salary,\n    ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) AS rn\n  FROM employees\n) t WHERE rn <= 3 ORDER BY department, salary DESC;"}
+]},
+{id:"limit-offset",cmd:"LIMIT / OFFSET",cat:"sel",catLabel:"SELECT",
+desc:"Begrens antall returnerte rader og implementer paginering.",
+tags:["limit","offset","paginering","top n","grense","side"],
+difficulty:"beginner",related:["select-cmd","order-by","row-number"],
+pitfalls:["Alltid bruk ORDER BY med LIMIT.","Høy OFFSET er treg — bruk cursor-basert paginering."],
+when:["Hent N første","Paginering","Cursor-basert navigering"],
+examples:[
+{label:"1 · Første 5",code:"SELECT * FROM employees LIMIT 5;"},
+{label:"2 · Hopp over og hent",code:"SELECT * FROM employees ORDER BY id LIMIT 5 OFFSET 10;"},
+{label:"3 · Side 1 (10 per side)",code:"SELECT * FROM products ORDER BY name LIMIT 10 OFFSET 0;"},
+{label:"4 · Side 2",code:"SELECT * FROM products ORDER BY name LIMIT 10 OFFSET 10;"},
+{label:"5 · Side N (dynamisk)",code:"-- side=3, per_side=10 → OFFSET = (3-1)*10 = 20\nSELECT * FROM products ORDER BY name LIMIT 10 OFFSET 20;"},
+{label:"6 · Dyreste produkt",code:"SELECT name, price FROM products ORDER BY price DESC LIMIT 1;"},
+{label:"7 · Nest dyreste",code:"SELECT name, price FROM products\nORDER BY price DESC LIMIT 1 OFFSET 1;"},
+{label:"8 · Topp 10 kunder etter omsetning",code:"SELECT customer_id, SUM(amount) AS total\nFROM orders GROUP BY customer_id\nORDER BY total DESC LIMIT 10;"},
+{label:"9 · Alternativ MySQL-syntaks",code:"SELECT * FROM employees LIMIT 10, 5;\n-- Ekvivalent: LIMIT 5 OFFSET 10"},
+{label:"10 · Cursor-basert paginering",code:"-- Side 1\nSELECT id, name FROM employees\nWHERE id > 0 ORDER BY id LIMIT 20;\n-- Neste side (last_id=20)\nSELECT id, name FROM employees\nWHERE id > 20 ORDER BY id LIMIT 20;  -- raskere enn OFFSET"}
+]},
+{id:"like",cmd:"LIKE / NOT LIKE",cat:"sel",catLabel:"SELECT",
+desc:"Tekstmønstergjenkjenning med jokertegnene % (mange tegn) og _ (ett tegn).",
+tags:["like","mønster","wildcard","prefix","suffix","inneholder","binary"],
+difficulty:"beginner",related:["where","regexp","string-fn"],
+pitfalls:["LIKE '%søk%' bruker IKKE indeks.","MySQL LIKE er case-insensitivt som standard."],
+when:["Enkle tekstmønstre","Prefix-/suffix-søk","Inneholdssjekk"],
+examples:[
+{label:"1 · Starter med",code:"SELECT * FROM employees WHERE name LIKE 'A%';"},
+{label:"2 · Slutter med",code:"SELECT * FROM employees WHERE name LIKE '%sen';"},
+{label:"3 · Inneholder",code:"SELECT * FROM products WHERE description LIKE '%trådløs%';"},
+{label:"4 · Ett tegn med _",code:"SELECT * FROM codes WHERE code LIKE 'A_1';\n-- Treffer A01, AB1, AC1, men ikke A001"},
+{label:"5 · NOT LIKE",code:"SELECT * FROM emails WHERE address NOT LIKE '%@spam%';"},
+{label:"6 · E-poster fra domene",code:"SELECT name, email FROM users\nWHERE email LIKE '%@oslo.kommune.no';"},
+{label:"7 · Postnummer Oslo",code:"SELECT * FROM addresses WHERE zip LIKE '02%';"},
+{label:"8 · LIKE + AND",code:"SELECT * FROM customers\nWHERE name LIKE 'A%' AND city LIKE 'Ber%';"},
+{label:"9 · Case-sensitivt LIKE",code:"-- BINARY tvinger case-sensitiv sammenligning\nSELECT * FROM products WHERE name LIKE BINARY '%iPhone%';\n-- Treffer 'iPhone' men ikke 'IPHONE' eller 'iphone'"},
+{label:"10 · Kombinert LIKE i JOIN",code:"SELECT c.name, o.id FROM customers c\nJOIN orders o ON o.customer_id = c.id\nWHERE c.name LIKE '%Hansen%'\n  AND o.order_date >= '2024-01-01';"}
+]},
+{id:"between",cmd:"BETWEEN / NOT BETWEEN",cat:"sel",catLabel:"SELECT",
+desc:"Filtrer verdier innenfor et inkluderende intervall (tall, datoer, tekst).",
+tags:["between","intervall","mellom","range","datoperiode"],
+difficulty:"beginner",related:["where","in-list","date-fn"],
+pitfalls:["BETWEEN er inkluderende i BEGGE ender.","For datoer med klokkeslett: bruk >= og < i stedet."],
+when:["Tall-/dato-/tekstintervall","Erstatt >= AND <="],
+examples:[
+{label:"1 · Tallintervall",code:"SELECT * FROM employees\nWHERE salary BETWEEN 50000 AND 80000;"},
+{label:"2 · Datointervall",code:"SELECT * FROM orders\nWHERE order_date BETWEEN '2024-01-01' AND '2024-12-31';"},
+{label:"3 · NOT BETWEEN",code:"SELECT * FROM products\nWHERE price NOT BETWEEN 100 AND 500;"},
+{label:"4 · Inklusiv test",code:"-- Inkluderer både 1 og 5\nSELECT * FROM scores WHERE points BETWEEN 1 AND 5;"},
+{label:"5 · Sikrere dato med klokkeslett",code:"SELECT * FROM orders\nWHERE order_date >= '2024-01-01'\n  AND order_date < '2025-01-01';"},
+{label:"6 · Tekst alfabetisk",code:"SELECT * FROM employees\nWHERE name BETWEEN 'A' AND 'M';"},
+{label:"7 · Alder",code:"SELECT name, age FROM customers\nWHERE age BETWEEN 18 AND 35;"},
+{label:"8 · CASE med BETWEEN",code:"SELECT name,\n  CASE\n    WHEN salary BETWEEN 0 AND 39999     THEN 'Under 40k'\n    WHEN salary BETWEEN 40000 AND 69999 THEN '40k–70k'\n    ELSE '70k+'\n  END AS bånd\nFROM employees;"},
+{label:"9 · Dato + beløp",code:"SELECT * FROM orders\nWHERE order_date BETWEEN '2024-01-01' AND '2024-06-30'\n  AND amount BETWEEN 500 AND 10000;"},
+{label:"10 · Siste 30 dager",code:"SELECT * FROM events\nWHERE event_date BETWEEN\n  DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE();"}
+]},
+{id:"in-list",cmd:"IN / NOT IN",cat:"sel",catLabel:"SELECT",
+desc:"Filtrer mot en liste med verdier — raskere enn mange OR.",
+tags:["in","not in","liste","verdimatching","or-erstatning"],
+difficulty:"beginner",related:["where","exists","between","subquery"],
+pitfalls:["NOT IN returnerer INGENTING om listen inneholder NULL — bruk NOT EXISTS.","Lange IN-lister kan bli trege."],
+when:["Match mot statisk liste","Erstatt mange OR","Filter fra subquery"],
+examples:[
+{label:"1 · Statisk liste",code:"SELECT * FROM employees\nWHERE department IN ('IT','Finance','HR');"},
+{label:"2 · NOT IN",code:"SELECT * FROM products\nWHERE category NOT IN ('Arkivert','Utkast');"},
+{label:"3 · IN med tall",code:"SELECT * FROM orders WHERE status_id IN (1,2,5);"},
+{label:"4 · IN med subquery",code:"SELECT * FROM employees\nWHERE dept_id IN (\n  SELECT id FROM departments WHERE location='Oslo'\n);"},
+{label:"5 · NOT IN med subquery",code:"SELECT name FROM customers\nWHERE id NOT IN (SELECT DISTINCT customer_id FROM orders);"},
+{label:"6 · IN + dato",code:"SELECT * FROM sales\nWHERE product_id IN (101,205,307)\n  AND sale_date >= '2024-01-01';"},
+{label:"7 · IN i UPDATE",code:"UPDATE employees SET department='Engineering'\nWHERE id IN (12,17,23,45);"},
+{label:"8 · IN i DELETE",code:"DELETE FROM sessions\nWHERE user_id IN (SELECT id FROM users WHERE active=0);"},
+{label:"9 · Sikker NOT EXISTS-alternativ",code:"-- Tryggere enn NOT IN når subquery kan returnere NULL:\nSELECT name FROM customers c\nWHERE NOT EXISTS (\n  SELECT 1 FROM orders o WHERE o.customer_id = c.id\n);"},
+{label:"10 · IN med JOIN (ytelse)",code:"SELECT e.* FROM employees e\nINNER JOIN (\n  SELECT id FROM departments WHERE budget > 1000000\n) d ON e.dept_id = d.id;"}
+]},
+{id:"null-check",cmd:"IS NULL / IS NOT NULL",cat:"sel",catLabel:"SELECT",
+desc:"Sjekk om en verdi er NULL — manglende eller ukjent data.",
+tags:["null","is null","is not null","manglende","coalesce","ifnull","null-sikker"],
+difficulty:"beginner",related:["where","coalesce","left-join"],
+pitfalls:["= NULL er alltid FALSE.","NULL i aritmetikk smitter: 5+NULL=NULL."],
+when:["Finn manglende data","Ekskluder NULL","NULL-sikker sammenligning med <=>"],
+examples:[
+{label:"1 · Finn rader uten leder",code:"SELECT * FROM employees WHERE manager_id IS NULL;"},
+{label:"2 · Finn rader med telefon",code:"SELECT name, phone FROM employees WHERE phone IS NOT NULL;"},
+{label:"3 · Tell NULL vs ikke-NULL",code:"SELECT\n  COUNT(*) AS totalt,\n  COUNT(manager_id) AS med_leder,\n  COUNT(*)-COUNT(manager_id) AS uten\nFROM employees;"},
+{label:"4 · COALESCE",code:"SELECT name, COALESCE(phone,'Ingen tlf') AS kontakt\nFROM employees;"},
+{label:"5 · IFNULL (MySQL-spesifikk)",code:"SELECT name, IFNULL(bonus, 0) AS bonus FROM employees;"},
+{label:"6 · NULL i WHERE med AND",code:"SELECT * FROM orders\nWHERE shipped_date IS NULL\n  AND order_date < DATE_SUB(CURDATE(), INTERVAL 7 DAY);"},
+{label:"7 · NULLIF — unngå divisjon med 0",code:"SELECT name, total/NULLIF(antall, 0) AS snitt\nFROM rapport;"},
+{label:"8 · Mange NULL-felt",code:"SELECT id, name FROM customers\nWHERE phone IS NULL AND email IS NULL AND address IS NULL;"},
+{label:"9 · LEFT JOIN + IS NULL (anti-join)",code:"SELECT c.name FROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nWHERE o.id IS NULL;  -- kunder uten bestillinger"},
+{label:"10 · NULL-sikker <=> i MySQL",code:"-- <=> er NULL-sikker lik (MySQL-spesifikk)\nSELECT * FROM employees WHERE manager_id <=> NULL;\n-- Ekvivalent med: WHERE manager_id IS NULL\n\n-- Nyttig i JOIN:\nSELECT a.name, b.name FROM emp a JOIN emp b\n  ON a.manager_id <=> b.manager_id;"}
+]},
+{id:"case-when",cmd:"CASE WHEN",cat:"sel",catLabel:"SELECT",
+desc:"Betinget logikk — tilsvarer if/else/switch.",
+tags:["case","when","then","else","betinget","if-else","klassifiser","pivot"],
+difficulty:"intermediate",related:["coalesce","group-by","rollup"],
+pitfalls:["Manglende ELSE returnerer NULL.","CASE evaluerer top-til-bunn og stopper ved første treff."],
+when:["Klassifiser data","Betingede beregninger","Pivot-teknikk","Egendefinert sortering"],
+examples:[
+{label:"1 · Enkel verdisjekk",code:"SELECT name,\n  CASE status\n    WHEN 1 THEN 'Aktiv'\n    WHEN 0 THEN 'Inaktiv'\n    ELSE 'Ukjent'\n  END AS status_tekst\nFROM employees;"},
+{label:"2 · Søkt CASE",code:"SELECT name, salary,\n  CASE\n    WHEN salary >= 80000 THEN 'Senior'\n    WHEN salary >= 55000 THEN 'Mellom'\n    ELSE 'Junior'\n  END AS nivå\nFROM employees;"},
+{label:"3 · CASE i ORDER BY",code:"SELECT name, status FROM tasks\nORDER BY CASE status\n  WHEN 'Kritisk' THEN 1 WHEN 'Høy' THEN 2\n  WHEN 'Normal' THEN 3 ELSE 4 END;"},
+{label:"4 · CASE i aggregat",code:"SELECT department,\n  SUM(CASE WHEN salary >= 70000 THEN 1 ELSE 0 END) AS høy,\n  SUM(CASE WHEN salary <  70000 THEN 1 ELSE 0 END) AS lav\nFROM employees GROUP BY department;"},
+{label:"5 · Pivot-teknikk",code:"SELECT\n  SUM(CASE WHEN YEAR(hire_date)=2022 THEN 1 ELSE 0 END) AS ans_2022,\n  SUM(CASE WHEN YEAR(hire_date)=2023 THEN 1 ELSE 0 END) AS ans_2023,\n  SUM(CASE WHEN YEAR(hire_date)=2024 THEN 1 ELSE 0 END) AS ans_2024\nFROM employees;"},
+{label:"6 · CASE i UPDATE",code:"UPDATE products SET price = CASE\n  WHEN category='Premium' THEN price*1.10\n  WHEN category='Budget'  THEN price*0.90\n  ELSE price\nEND;"},
+{label:"7 · NULL-håndtering",code:"SELECT name,\n  CASE\n    WHEN phone IS NULL AND email IS NULL THEN 'Ingen kontakt'\n    WHEN phone IS NULL THEN 'Kun e-post'\n    WHEN email IS NULL THEN 'Kun telefon'\n    ELSE 'Begge'\n  END AS kontakt\nFROM customers;"},
+{label:"8 · Beregn rabatt",code:"SELECT order_id, amount,\n  CASE\n    WHEN amount >= 10000 THEN amount*0.15\n    WHEN amount >= 5000  THEN amount*0.10\n    WHEN amount >= 1000  THEN amount*0.05\n    ELSE 0\n  END AS rabatt\nFROM orders;"},
+{label:"9 · Nestet CASE",code:"SELECT name, salary, years_exp,\n  CASE\n    WHEN years_exp >= 10 THEN\n      CASE WHEN salary >= 90000 THEN 'Senior A' ELSE 'Senior B' END\n    WHEN years_exp >= 5 THEN 'Erfaren'\n    ELSE 'Junior'\n  END AS kategori\nFROM employees;"},
+{label:"10 · CASE som filterbetingelse",code:"SELECT * FROM orders\nWHERE CASE customer_type\n  WHEN 'VIP'    THEN amount >= 100\n  WHEN 'Normal' THEN amount >= 500\n  ELSE amount >= 1000\nEND;"}
+]},
+{id:"union",cmd:"UNION / UNION ALL",cat:"sel",catLabel:"SELECT",
+desc:"Kombiner resultater fra to SELECT-setninger vertikalt.",
+tags:["union","union all","kombinere","stable rader","duplikater"],
+difficulty:"intermediate",related:["select-cmd","cte"],
+pitfalls:["UNION fjerner duplikater (tregere) — bruk UNION ALL hvis duplikater er OK.","Begge SELECT MÅ ha samme antall kolonner og kompatible datatyper."],
+when:["Slå sammen lik struktur","Rapport med totallinje","Kombiner historiske data"],
+examples:[
+{label:"1 · UNION (fjerner duplikater)",code:"SELECT name FROM employees WHERE dept='IT'\nUNION\nSELECT name FROM contractors WHERE dept='IT';"},
+{label:"2 · UNION ALL (raskere)",code:"SELECT product_id, amount FROM q1_sales\nUNION ALL\nSELECT product_id, amount FROM q2_sales;"},
+{label:"3 · Kombiner kunder og leverandører",code:"SELECT id, name, 'Kunde' AS type FROM customers\nUNION ALL\nSELECT id, name, 'Leverandør' FROM suppliers\nORDER BY name;"},
+{label:"4 · Aktive og arkiverte",code:"SELECT id, name, salary, 'Aktiv' AS status FROM employees\nUNION ALL\nSELECT id, name, salary, 'Arkivert' FROM archive_employees\nORDER BY id;"},
+{label:"5 · UNION med konstantkolonne",code:"SELECT 'Jan' AS mnd, SUM(amount) AS tot FROM jan_sales\nUNION ALL SELECT 'Feb', SUM(amount) FROM feb_sales\nUNION ALL SELECT 'Mar', SUM(amount) FROM mar_sales;"},
+{label:"6 · Aggregér kombinert data",code:"SELECT category, SUM(revenue) AS tot FROM (\n  SELECT category, revenue FROM online_sales\n  UNION ALL\n  SELECT category, revenue FROM offline_sales\n) alle GROUP BY category ORDER BY tot DESC;"},
+{label:"7 · Rapport med totalrad",code:"SELECT department, SUM(salary) AS total FROM employees\nGROUP BY department\nUNION ALL\nSELECT 'TOTAL', SUM(salary) FROM employees\nORDER BY total DESC;"},
+{label:"8 · Fyll datohull",code:"SELECT date, sales FROM sales_2023\nUNION ALL\nSELECT date, sales FROM sales_2024\nORDER BY date;"},
+{label:"9 · UNION + CTE",code:"WITH alle AS (\n  SELECT id, amount, 'Inn' AS type FROM payments\n  UNION ALL\n  SELECT id, amount, 'Ut' FROM withdrawals\n)\nSELECT type, COUNT(*) AS ant, SUM(amount) AS total\nFROM alle GROUP BY type;"},
+{label:"10 · FULL OUTER JOIN emulert (MySQL)",code:"-- MySQL støtter ikke FULL OUTER JOIN — bruk UNION:\nSELECT e.name, d.dept_name FROM employees e\nLEFT JOIN departments d ON e.dept_id=d.id\nUNION\nSELECT e.name, d.dept_name FROM employees e\nRIGHT JOIN departments d ON e.dept_id=d.id;"}
+]},
+
+{id:"insert",cmd:"INSERT INTO",cat:"dml",catLabel:"DML",
+desc:"Legg til én eller flere rader i en MySQL-tabell.",
+tags:["insert","sett inn","legg til","ny rad","bulk insert"],
+difficulty:"beginner",related:["update","upsert","select-cmd","transaction"],
+pitfalls:["Uten kolonneliste bestemmes rekkefølgen av tabelldefinisjonen — farlig ved schema-endringer."],
+when:["Legg til enkeltrad","Bulk-insert mange rader","Kopier data fra annen tabell"],
+examples:[
+{label:"1 · Én rad",code:"INSERT INTO employees (name, department, salary, hire_date)\nVALUES ('Alice', 'IT', 65000, '2024-03-01');"},
+{label:"2 · Minimalt",code:"INSERT INTO products (name, price) VALUES ('Tastatur', 499.00);"},
+{label:"3 · Flere rader",code:"INSERT INTO employees (name, department, salary) VALUES\n  ('Bob',   'Finance', 72000),\n  ('Carol', 'IT',      68000),\n  ('Dave',  'HR',      55000);"},
+{label:"4 · Fra SELECT",code:"INSERT INTO archive_employees (id, name, salary)\nSELECT id, name, salary FROM employees\nWHERE termination_date < '2024-01-01';"},
+{label:"5 · DEFAULT-verdier",code:"INSERT INTO logs (user_id, action) VALUES (42,'LOGIN');\n-- created_at bruker DEFAULT CURRENT_TIMESTAMP"},
+{label:"6 · Beregnet verdi",code:"INSERT INTO order_items (order_id, product_id, qty, unit_price, total)\nVALUES (101, 5, 3, 299.00, 3*299.00);"},
+{label:"7 · INSERT IGNORE",code:"INSERT IGNORE INTO subscribers (email) VALUES ('alice@example.com');\n-- ingen feil om e-posten finnes"},
+{label:"8 · ON DUPLICATE KEY UPDATE",code:"INSERT INTO page_views (url, views) VALUES ('/hjem', 1)\nON DUPLICATE KEY UPDATE views = views+1, last_seen = NOW();"},
+{label:"9 · Fra aggregert subquery",code:"INSERT INTO dept_budgets (dept_id, approved)\nSELECT id, (SELECT SUM(salary) FROM employees WHERE dept_id=d.id)*1.2\nFROM departments d;"},
+{label:"10 · Månedlig rapport",code:"INSERT INTO monthly_report (month, dept, emp_count, avg_salary)\nSELECT DATE_FORMAT(CURDATE(),'%Y-%m'), department,\n  COUNT(*), ROUND(AVG(salary),2)\nFROM employees GROUP BY department;"}
+]},
+{id:"update",cmd:"UPDATE",cat:"dml",catLabel:"DML",
+desc:"Endre eksisterende rader i en MySQL-tabell.",
+tags:["update","oppdater","endre","modifiser","sett verdi"],
+difficulty:"beginner",related:["delete","transaction","select-cmd","upsert"],
+pitfalls:["UPDATE uten WHERE oppdaterer ALLE rader!","MySQL Workbench: Safe Updates er aktivert som standard — bruk primærnøkkel i WHERE.","Kjør alltid SELECT med samme WHERE FØR UPDATE."],
+when:["Endre verdier","Oppdater med beregning","Oppdater fra annen tabell via JOIN"],
+examples:[
+{label:"1 · Enkel oppdatering",code:"UPDATE employees SET salary = 75000 WHERE id = 42;"},
+{label:"2 · Beregnet verdi",code:"UPDATE employees SET salary = salary*1.05 WHERE department='IT';"},
+{label:"3 · Flere kolonner",code:"UPDATE employees\nSET department='Engineering', manager_id=5, updated_at=NOW()\nWHERE id=42;"},
+{label:"4 · JOIN-basert UPDATE",code:"UPDATE employees e\nJOIN bonuses b ON e.id = b.employee_id\nSET e.salary = e.salary + b.amount\nWHERE b.year = 2024;"},
+{label:"5 · CASE i UPDATE",code:"UPDATE products SET price = CASE\n  WHEN category='Premium' THEN price*1.10\n  WHEN category='Budget'  THEN price*0.90\n  ELSE price\nEND;"},
+{label:"6 · Sett NULL",code:"UPDATE employees SET manager_id = NULL WHERE id = 15;"},
+{label:"7 · Dato-oppdatering",code:"UPDATE orders SET shipped_date = CURDATE(), status='Sendt'\nWHERE id IN (101,102,103);"},
+{label:"8 · LIMIT for batch",code:"UPDATE logs SET processed = 1\nWHERE processed = 0\nORDER BY created_at LIMIT 1000;"},
+{label:"9 · Subquery i SET",code:"UPDATE employees e\nSET e.salary = (\n  SELECT avd_snitt FROM (\n    SELECT dept_id, AVG(salary) AS avd_snitt\n    FROM employees GROUP BY dept_id\n  ) t WHERE t.dept_id = e.dept_id\n)\nWHERE e.salary < 30000;"},
+{label:"10 · Sjekk FØR update — anbefalt praksis",code:"-- Steg 1: Sjekk hva som endres\nSELECT id, name, salary FROM employees\nWHERE department='IT' AND hire_date<'2020-01-01';\n\n-- Steg 2: Kjør UPDATE med IDENTISK WHERE\nUPDATE employees SET salary = salary*1.08\nWHERE department='IT' AND hire_date<'2020-01-01';"}
+]},
+{id:"delete",cmd:"DELETE",cat:"dml",catLabel:"DML",
+desc:"Slett én eller flere rader fra en MySQL-tabell.",
+tags:["delete","slett","fjern","rens"],
+difficulty:"beginner",related:["transaction","truncate","update","select-cmd"],
+pitfalls:["DELETE uten WHERE sletter ALLE rader.","MySQL Workbench Safe Updates: bruk primærnøkkel i WHERE.","Kjør SELECT med samme WHERE FØR DELETE."],
+when:["Slett spesifikke rader","Batch-rydding","Slett relaterte rader via JOIN"],
+examples:[
+{label:"1 · Slett med primærnøkkel",code:"DELETE FROM employees WHERE id = 42;"},
+{label:"2 · Slett med betingelse",code:"DELETE FROM sessions WHERE expires_at < NOW();"},
+{label:"3 · Slett via subquery",code:"DELETE FROM orders\nWHERE customer_id IN (SELECT id FROM customers WHERE active=0);"},
+{label:"4 · Antall slettede rader",code:"DELETE FROM logs WHERE created_at < '2023-01-01';\nSELECT ROW_COUNT();  -- viser antall slettede"},
+{label:"5 · LIMIT for sikker batch",code:"DELETE FROM logs WHERE processed = 1\nORDER BY created_at LIMIT 1000;"},
+{label:"6 · JOIN-DELETE",code:"DELETE oi FROM order_items oi\nJOIN orders o ON oi.order_id = o.id\nWHERE o.status='Kansellert' AND o.created_at<'2023-01-01';"},
+{label:"7 · Slett duplikater",code:"DELETE FROM users WHERE id NOT IN (\n  SELECT min_id FROM (\n    SELECT MIN(id) AS min_id FROM users GROUP BY email\n  ) t\n);"},
+{label:"8 · Slett gamle tokens",code:"DELETE FROM temp_tokens\nWHERE created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR);"},
+{label:"9 · Transaksjonsbeskyttet",code:"START TRANSACTION;\nDELETE FROM order_items WHERE order_id = 99;\nDELETE FROM orders WHERE id = 99;\nSELECT ROW_COUNT();\nCOMMIT;  -- eller ROLLBACK"},
+{label:"10 · Sjekk FØR sletting",code:"-- Steg 1: Sjekk\nSELECT COUNT(*) FROM logs WHERE processed=1;\n-- Steg 2: Slett\nDELETE FROM logs WHERE processed=1;"}
+]},
+{id:"upsert",cmd:"INSERT … ON DUPLICATE KEY",cat:"dml",catLabel:"DML",
+desc:"Sett inn rad — oppdater hvis den finnes (MySQL upsert).",
+tags:["upsert","on duplicate key","insert ignore","replace into","synkroniser"],
+difficulty:"intermediate",related:["insert","update","transaction"],
+pitfalls:["Krever UNIQUE- eller PRIMARY KEY-begrensning.","REPLACE INTO sletter og setter inn på nytt — mister fremmednøkkel-referanser!"],
+when:["Skriv uten å vite om raden finnes","Synkroniser data","Inkrementer teller"],
+examples:[
+{label:"1 · Grunnleggende upsert",code:"INSERT INTO employees (id, name, salary)\nVALUES (1, 'Alice', 75000)\nON DUPLICATE KEY UPDATE salary = VALUES(salary);"},
+{label:"2 · Oppdater flere kolonner",code:"INSERT INTO products (id, name, price, stock)\nVALUES (101, 'Tastatur', 499, 50)\nON DUPLICATE KEY UPDATE\n  price = VALUES(price), stock = VALUES(stock);"},
+{label:"3 · Inkrementer teller",code:"INSERT INTO page_views (url, views) VALUES ('/hjem', 1)\nON DUPLICATE KEY UPDATE\n  views = views + 1, last_seen = NOW();"},
+{label:"4 · INSERT IGNORE",code:"INSERT IGNORE INTO unique_visits (user_id, page, visit_date)\nVALUES (42, '/hjem', CURDATE());"},
+{label:"5 · Bulk upsert",code:"INSERT INTO inventory (product_id, stock)\nVALUES (1,100),(2,200),(3,150)\nON DUPLICATE KEY UPDATE stock = VALUES(stock);"},
+{label:"6 · Betinget oppdatering",code:"INSERT INTO prices (product_id, price)\nVALUES (101, 499.00)\nON DUPLICATE KEY UPDATE\n  price = IF(VALUES(price) < price, VALUES(price), price);"},
+{label:"7 · REPLACE INTO (forsiktig!)",code:"-- ⚠️ Sletter gammel rad og setter inn ny\nREPLACE INTO config (key_name, value) VALUES ('timeout','30');"},
+{label:"8 · Sjekk resultat med ROW_COUNT()",code:"INSERT INTO subscribers (email, created_at)\nVALUES ('ny@ex.com', NOW())\nON DUPLICATE KEY UPDATE email = email;\nSELECT ROW_COUNT();\n-- 1 = ny rad, 2 = oppdatert, 0 = ingen endring"},
+{label:"9 · Upsert fra SELECT",code:"INSERT INTO kategori_stats (kategori, total, antall)\nSELECT category, SUM(price), COUNT(*) FROM products GROUP BY category\nON DUPLICATE KEY UPDATE\n  total = VALUES(total), antall = VALUES(antall);"},
+{label:"10 · Synkroniser fra ekstern kilde",code:"INSERT INTO products (sku, name, price, updated_at)\nVALUES ('ABC123', 'Mus', 299, NOW())\nON DUPLICATE KEY UPDATE\n  name = VALUES(name), price = VALUES(price), updated_at = NOW();"}
+]},
+{id:"truncate",cmd:"TRUNCATE TABLE",cat:"dml",catLabel:"DML",
+desc:"Fjern ALLE rader øyeblikkelig — mye raskere enn DELETE.",
+tags:["truncate","tøm","nullstill","auto_increment reset"],
+difficulty:"intermediate",related:["delete","transaction","create-table"],
+pitfalls:["TRUNCATE kan IKKE rulles tilbake i MySQL.","Triggere kjøres IKKE.","Fremmednøkkel-begrensninger kan hindre TRUNCATE."],
+when:["Tøm hel tabell raskt","Nullstill testdata","Reset AUTO_INCREMENT"],
+examples:[
+{label:"1 · Enkel truncate",code:"TRUNCATE TABLE session_logs;"},
+{label:"2 · Nullstiller AUTO_INCREMENT",code:"TRUNCATE TABLE users;\n-- Neste INSERT får id=1"},
+{label:"3 · Ytelse vs DELETE",code:"-- TRUNCATE: O(1)\nTRUNCATE TABLE big_log_table;\n-- DELETE: O(n) — veldig tregt på store tabeller"},
+{label:"4 · Med fremmednøkkel",code:"SET FOREIGN_KEY_CHECKS = 0;\nTRUNCATE TABLE order_items;\nTRUNCATE TABLE orders;\nSET FOREIGN_KEY_CHECKS = 1;"},
+{label:"5 · Nullstill testdata",code:"TRUNCATE TABLE test_users;\nTRUNCATE TABLE test_orders;\nTRUNCATE TABLE test_products;"},
+{label:"6 · Backup FØR truncate",code:"CREATE TABLE backup_orders AS SELECT * FROM orders;\nTRUNCATE TABLE orders;"},
+{label:"7 · Tøm og fyll på nytt",code:"TRUNCATE TABLE department_stats;\nINSERT INTO department_stats (dept, ant, snitt)\nSELECT department, COUNT(*), AVG(salary)\nFROM employees GROUP BY department;"},
+{label:"8 · TRUNCATE vs DROP",code:"-- TRUNCATE: beholder struktur\nTRUNCATE TABLE logs;\n-- DROP: fjerner tabell helt\n-- DROP TABLE logs;"},
+{label:"9 · Sjekk FØR/ETTER",code:"SELECT COUNT(*) AS før FROM logs;\nTRUNCATE TABLE logs;\nSELECT COUNT(*) AS etter FROM logs;  -- 0"},
+{label:"10 · Når velge TRUNCATE vs DELETE?",code:"-- TRUNCATE når:\n--   Fjerne ALLE rader\n--   Høy ytelse er viktig\n--   Reset AUTO_INCREMENT\n\n-- DELETE når:\n--   Trenger WHERE-filter\n--   Trenger ROLLBACK\n--   Triggere skal kjøre"}
+]},
+{id:"inner-join",cmd:"INNER JOIN",cat:"join",catLabel:"JOIN",
+desc:"Returner kun rader som har samsvar i BEGGE tabeller.",
+tags:["inner join","koble","samsvar","match","equi-join"],
+difficulty:"beginner",related:["left-join","cross-join","self-join"],
+pitfalls:["JOIN uten ON gir kartesisk produkt.","Manglende indeks på JOIN-kolonne er den vanligste ytelsesfeilen."],
+when:["Kombiner med felles nøkkel","Finn bare matchede rader"],
+examples:[
+{label:"1 · Enkel INNER JOIN",code:"SELECT e.name, d.dept_name\nFROM employees e\nINNER JOIN departments d ON e.dept_id = d.id;"},
+{label:"2 · Tre tabeller",code:"SELECT o.id, c.name, p.title\nFROM orders o\nJOIN customers c ON o.customer_id = c.id\nJOIN products p ON o.product_id = p.id;"},
+{label:"3 · Med WHERE",code:"SELECT e.name, d.dept_name, e.salary\nFROM employees e JOIN departments d ON e.dept_id = d.id\nWHERE e.salary > 60000;"},
+{label:"4 · Med GROUP BY",code:"SELECT d.dept_name, COUNT(e.id) AS ant, AVG(e.salary) AS snitt\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name ORDER BY snitt DESC;"},
+{label:"5 · Med HAVING",code:"SELECT d.dept_name, AVG(e.salary) AS snitt\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name HAVING snitt > 65000;"},
+{label:"6 · Fire tabeller",code:"SELECT c.name, o.id, p.name AS prod, cat.name AS kat\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p ON p.id = oi.product_id\nJOIN categories cat ON cat.id = p.category_id;"},
+{label:"7 · JOIN + BETWEEN",code:"SELECT e.name, s.salary_band\nFROM employees e\nJOIN salary_bands s ON e.salary BETWEEN s.min_sal AND s.max_sal;"},
+{label:"8 · JOIN + LIKE",code:"SELECT e.name, d.dept_name FROM employees e\nJOIN departments d ON e.dept_id = d.id\nWHERE d.dept_name LIKE '%IT%';"},
+{label:"9 · Aggregat + HAVING",code:"SELECT d.dept_name, COUNT(*) AS ant, SUM(e.salary) AS total\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name HAVING total > 300000\nORDER BY total DESC;"},
+{label:"10 · JOIN + vindufunksjon",code:"SELECT e.name, d.dept_name, e.salary,\n  RANK() OVER (PARTITION BY e.dept_id ORDER BY e.salary DESC) AS rang\nFROM employees e JOIN departments d ON e.dept_id = d.id\nORDER BY d.dept_name, rang;"}
+]},
+{id:"left-join",cmd:"LEFT JOIN",cat:"join",catLabel:"JOIN",
+desc:"Returner alle rader fra venstre tabell; NULL for rader uten samsvar i høyre.",
+tags:["left join","alle venstre","ytre","anti-join","null for høyre"],
+difficulty:"beginner",related:["inner-join","null-check"],
+pitfalls:["WHERE-filter på høyre tabellen konverterer LEFT JOIN til INNER JOIN — flytt til ON.","Bruk COALESCE rundt aggregater fra høyre tabellen."],
+when:["Behold alle venstrerader","Anti-join (finn manglende)","Valgfrie relasjoner"],
+examples:[
+{label:"1 · Enkel LEFT JOIN",code:"SELECT e.name, p.project_name\nFROM employees e\nLEFT JOIN projects p ON e.id = p.employee_id;"},
+{label:"2 · Anti-join: finn rader uten match",code:"SELECT e.name FROM employees e\nLEFT JOIN projects p ON e.id = p.employee_id\nWHERE p.id IS NULL;"},
+{label:"3 · Kunder uten bestillinger",code:"SELECT c.name FROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nWHERE o.id IS NULL;"},
+{label:"4 · COUNT inkl. avd med 0 ansatte",code:"SELECT d.dept_name, COUNT(e.id) AS ant\nFROM departments d\nLEFT JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name;"},
+{label:"5 · COALESCE for NULL-håndtering",code:"SELECT c.name, COALESCE(SUM(o.amount), 0) AS total\nFROM customers c\nLEFT JOIN orders o ON o.customer_id = c.id\nGROUP BY c.id, c.name ORDER BY total DESC;"},
+{label:"6 · To LEFT JOINs",code:"SELECT e.name, d.dept_name, p.project_name\nFROM employees e\nLEFT JOIN departments d ON e.dept_id = d.id\nLEFT JOIN projects p    ON e.id = p.employee_id;"},
+{label:"7 · Filter på venstre (OK)",code:"SELECT e.name, p.project_name FROM employees e\nLEFT JOIN projects p ON e.id = p.employee_id\nWHERE e.department = 'IT';"},
+{label:"8 · Filter på høyre: flytt til ON",code:"-- ❌ WHERE p.active=1 fjerner NULL-rader!\n-- ✅ Flytt til ON:\nSELECT e.name, p.name FROM employees e\nLEFT JOIN projects p\n  ON e.id = p.employee_id AND p.active = 1;"},
+{label:"9 · Siste ordre per kunde",code:"SELECT e.name, lo.order_date FROM employees e\nLEFT JOIN (\n  SELECT employee_id, MAX(order_date) AS order_date\n  FROM orders GROUP BY employee_id\n) lo ON lo.employee_id = e.id;"},
+{label:"10 · Sammenlign to perioder",code:"SELECT p.name,\n  COALESCE(a.total, 0) AS jan,\n  COALESCE(b.total, 0) AS feb\nFROM products p\nLEFT JOIN (SELECT product_id, SUM(qty) total FROM sales\n  WHERE MONTH(date)=1 GROUP BY product_id) a ON a.product_id = p.id\nLEFT JOIN (SELECT product_id, SUM(qty) total FROM sales\n  WHERE MONTH(date)=2 GROUP BY product_id) b ON b.product_id = p.id;"}
+]},
+{id:"right-join",cmd:"RIGHT JOIN",cat:"join",catLabel:"JOIN",
+desc:"Returner alle rader fra høyre tabell; NULL for rader uten samsvar i venstre.",
+tags:["right join","alle høyre","speilbilde left join"],
+difficulty:"beginner",related:["left-join","inner-join"],
+pitfalls:["RIGHT JOIN kan alltid skrives som LEFT JOIN ved å bytte tabellrekkefølge — mer lesbart."],
+when:["Speilbilde av LEFT JOIN","Behold alle høyrerader"],
+examples:[
+{label:"1 · Enkel RIGHT JOIN",code:"SELECT e.name, p.project_name\nFROM employees e\nRIGHT JOIN projects p ON e.id = p.employee_id;\n-- Alle prosjekter, selv uten ansatte"},
+{label:"2 · Ekvivalent LEFT JOIN (anbefalt)",code:"-- Mer lesbart:\nSELECT e.name, p.project_name\nFROM projects p\nLEFT JOIN employees e ON e.id = p.employee_id;"},
+{label:"3 · Prosjekter uten ansatte",code:"SELECT p.project_name FROM employees e\nRIGHT JOIN projects p ON e.id = p.employee_id\nWHERE e.id IS NULL;"},
+{label:"4 · Alle avdelinger uten ansatte",code:"SELECT e.name, d.dept_name\nFROM employees e\nRIGHT JOIN departments d ON e.dept_id = d.id\nORDER BY d.dept_name, e.name;"},
+{label:"5 · COUNT med RIGHT JOIN",code:"SELECT d.dept_name, COUNT(e.id) AS ansatte\nFROM employees e\nRIGHT JOIN departments d ON e.dept_id = d.id\nGROUP BY d.dept_name;"},
+{label:"6 · FULL OUTER emulering med UNION",code:"-- MySQL har ikke FULL OUTER JOIN — emuler:\nSELECT e.name, d.dept_name FROM employees e\nLEFT JOIN departments d ON e.dept_id = d.id\nUNION\nSELECT e.name, d.dept_name FROM employees e\nRIGHT JOIN departments d ON e.dept_id = d.id;"},
+{label:"7 · RIGHT JOIN med filter",code:"SELECT e.name, p.project_name\nFROM employees e\nRIGHT JOIN projects p ON e.id = p.employee_id\nWHERE p.priority = 'Høy';"},
+{label:"8 · RIGHT JOIN med GROUP BY",code:"SELECT d.dept_name, COALESCE(COUNT(e.id), 0) AS ant\nFROM employees e\nRIGHT JOIN departments d ON e.dept_id = d.id\nGROUP BY d.dept_name ORDER BY ant DESC;"},
+{label:"9 · Tre tabeller med RIGHT JOIN",code:"SELECT p.name, o.id AS order_id, c.name AS kunde\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nRIGHT JOIN products p ON p.id = o.product_id;"},
+{label:"10 · Lagerrapport med RIGHT JOIN",code:"SELECT\n  p.name AS produkt,\n  COALESCE(SUM(oi.qty), 0) AS solgt_stk,\n  p.stock AS lager\nFROM order_items oi\nRIGHT JOIN products p ON p.id = oi.product_id\nGROUP BY p.id, p.name, p.stock\nORDER BY solgt_stk DESC;"}
+]},
+{id:"self-join",cmd:"Self JOIN",cat:"join",catLabel:"JOIN",
+desc:"Koble en tabell til seg selv — for hierarkier og sammenligning.",
+tags:["self join","hierarki","leder","forelder","org-kart"],
+difficulty:"intermediate",related:["recursive-cte","inner-join"],
+pitfalls:["Bruk alltid to ulike aliaser.","For dype hierarkier: bruk rekursiv CTE."],
+when:["Org-kart","Sammenlign rader i samme tabell"],
+examples:[
+{label:"1 · Ansatt og leder",code:"SELECT e.name AS ansatt, m.name AS leder\nFROM employees e JOIN employees m ON e.manager_id = m.id;"},
+{label:"2 · Inkluder uten leder (LEFT)",code:"SELECT e.name, COALESCE(m.name, 'Ingen leder') AS leder\nFROM employees e LEFT JOIN employees m ON e.manager_id = m.id;"},
+{label:"3 · Direkte underordnede",code:"SELECT e.name FROM employees e\nJOIN employees m ON e.manager_id = m.id\nWHERE m.name = 'Anne Hansen';"},
+{label:"4 · Kategori-hierarki",code:"SELECT c.name AS underkategori, p.name AS overkategori\nFROM categories c LEFT JOIN categories p ON c.parent_id = p.id;"},
+{label:"5 · Ansatte med høyere lønn enn leder",code:"SELECT e.name, e.salary, m.name AS leder, m.salary AS leder_lønn\nFROM employees e JOIN employees m ON e.manager_id = m.id\nWHERE e.salary > m.salary;"},
+{label:"6 · Antall underordnede",code:"SELECT m.name AS leder, COUNT(e.id) AS underordnede\nFROM employees m JOIN employees e ON e.manager_id = m.id\nGROUP BY m.id, m.name ORDER BY underordnede DESC;"},
+{label:"7 · Prissammenligning",code:"SELECT a.name AS p1, b.name AS p2, a.price - b.price AS diff\nFROM products a JOIN products b\n  ON a.category = b.category AND a.id < b.id\nORDER BY ABS(a.price - b.price) DESC;"},
+{label:"8 · Søsken-noder",code:"SELECT a.name, b.name AS kollega\nFROM employees a JOIN employees b\n  ON a.manager_id = b.manager_id AND a.id != b.id;"},
+{label:"9 · Tre-nivå hierarki",code:"SELECT a.name AS direktør, b.name AS mellomleder, c.name AS ansatt\nFROM employees c\nJOIN employees b ON c.manager_id = b.id\nJOIN employees a ON b.manager_id = a.id\nWHERE a.manager_id IS NULL\nORDER BY a.name, b.name, c.name;"},
+{label:"10 · Løvnoder (uten underordnede)",code:"SELECT e.name FROM employees e\nLEFT JOIN employees sub ON sub.manager_id = e.id\nWHERE sub.id IS NULL;"}
+]},
+{id:"cross-join",cmd:"CROSS JOIN",cat:"join",catLabel:"JOIN",
+desc:"Returner alle mulige kombinasjoner — kartesisk produkt.",
+tags:["cross join","kartesisk","alle kombinasjoner","par"],
+difficulty:"intermediate",related:["inner-join","self-join"],
+pitfalls:["Rader_A × Rader_B — 1000×1000 = 1 million rader!","Utilsiktet CROSS JOIN: JOIN uten ON-betingelse."],
+when:["Generer alle kombinasjoner","Testdata","Matrise-rapporter"],
+examples:[
+{label:"1 · Produkt × farge",code:"SELECT p.name, c.color\nFROM products p\nCROSS JOIN colors c;"},
+{label:"2 · Ansatte × prosjekter",code:"SELECT e.name, p.project_name\nFROM employees e\nCROSS JOIN projects p\nORDER BY e.name, p.project_name;"},
+{label:"3 · Måned × avdeling",code:"SELECT m.month_name, d.dept_name\nFROM months m\nCROSS JOIN departments d\nORDER BY m.month_num, d.dept_name;"},
+{label:"4 · Størrelse × farge (nettbutikk)",code:"SELECT s.size, c.color, COUNT(*) AS ant\nFROM sizes s\nCROSS JOIN colors c\nGROUP BY s.size, c.color;"},
+{label:"5 · Generer kalender-rader",code:"SELECT DATE_ADD('2024-01-01', INTERVAL n.n DAY) AS dato\nFROM (\n  SELECT 0 n UNION ALL SELECT 1 UNION ALL SELECT 2\n  UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5\n  UNION ALL SELECT 6\n) n;"},
+{label:"6 · Sjekke alle prispar",code:"SELECT a.name, b.name, ABS(a.price - b.price) AS diff\nFROM products a\nCROSS JOIN products b\nWHERE a.id < b.id AND a.category = b.category;"},
+{label:"7 · Tom matrise: ansatt × kvartal",code:"SELECT e.name, q.quarter\nFROM employees e\nCROSS JOIN (\n  SELECT 'Q1' quarter UNION ALL SELECT 'Q2'\n  UNION ALL SELECT 'Q3' UNION ALL SELECT 'Q4'\n) q;"},
+{label:"8 · Utilsiktet CROSS JOIN — unngå!",code:"-- ⚠️ ADVARSEL: utilsiktet kartesisk produkt\nSELECT * FROM employees, departments;  -- mangler WHERE/ON!"},
+{label:"9 · Manglende kompetanse",code:"SELECT e.name, s.skill\nFROM employees e\nCROSS JOIN required_skills s\nWHERE NOT EXISTS (\n  SELECT 1 FROM employee_skills es\n  WHERE es.emp_id = e.id AND es.skill = s.skill\n);"},
+{label:"10 · Cross join for testdata",code:"INSERT INTO test_orders (customer_id, product_id, qty)\nSELECT c.id, p.id, FLOOR(1 + RAND()*10)\nFROM customers c\nCROSS JOIN products p\nWHERE RAND() < 0.2;  -- ca. 20% av kombinasjonene"}
+]},
+{id:"count",cmd:"COUNT()",cat:"agg",catLabel:"AGGREGAT",
+desc:"Tell antall rader, ikke-NULL-verdier eller unike verdier.",
+tags:["count","tell","antall","count distinct"],
+difficulty:"beginner",related:["group-by","sum-avg","distinct"],
+pitfalls:["COUNT(kol) ignorerer NULL — COUNT(*) teller ALT.","COUNT(DISTINCT kol) er tregere."],
+when:["Tell totalt","Tell per gruppe","Finn duplikater"],
+examples:[
+{label:"1 · Tell alle",code:"SELECT COUNT(*) FROM employees;"},
+{label:"2 · Tell ikke-NULL",code:"SELECT COUNT(manager_id) AS med_leder FROM employees;"},
+{label:"3 · Tell unike",code:"SELECT COUNT(DISTINCT department) AS avd FROM employees;"},
+{label:"4 · Per gruppe",code:"SELECT department, COUNT(*) AS ant FROM employees GROUP BY department;"},
+{label:"5 · Med WHERE",code:"SELECT department, COUNT(*) FROM employees\nWHERE salary > 60000 GROUP BY department;"},
+{label:"6 · HAVING",code:"SELECT department, COUNT(*) AS ant FROM employees\nGROUP BY department HAVING ant > 5;"},
+{label:"7 · Betinget COUNT",code:"SELECT\n  COUNT(*) AS totalt,\n  COUNT(CASE WHEN salary>70000 THEN 1 END) AS høy,\n  COUNT(CASE WHEN salary<=70000 THEN 1 END) AS lav\nFROM employees;"},
+{label:"8 · Via JOIN",code:"SELECT c.name, COUNT(o.id) AS ordrer\nFROM customers c LEFT JOIN orders o ON o.customer_id = c.id\nGROUP BY c.id, c.name ORDER BY ordrer DESC;"},
+{label:"9 · Finn duplikater",code:"SELECT email, COUNT(*) AS ant FROM users\nGROUP BY email HAVING ant > 1\nORDER BY ant DESC;"},
+{label:"10 · Prosentandel per gruppe",code:"SELECT department, COUNT(*) AS ant,\n  ROUND(COUNT(*)*100.0/SUM(COUNT(*)) OVER(), 1) AS prosent\nFROM employees GROUP BY department\nORDER BY prosent DESC;"}
+]},
+{id:"sum-avg",cmd:"SUM() / AVG()",cat:"agg",catLabel:"AGGREGAT",
+desc:"Beregn sum og gjennomsnitt av en numerisk kolonne.",
+tags:["sum","avg","total","gjennomsnitt","snitt"],
+difficulty:"beginner",related:["group-by","min-max","running-total"],
+pitfalls:["AVG ignorerer NULL.","ROUND(AVG()) for å få pene tall."],
+when:["Sum per gruppe","Gjennomsnitt","Kombinert statistikk"],
+examples:[
+{label:"1 · Total sum",code:"SELECT SUM(salary) AS total_lønn FROM employees;"},
+{label:"2 · Gjennomsnitt",code:"SELECT ROUND(AVG(salary), 2) AS snitt FROM employees;"},
+{label:"3 · Per avdeling",code:"SELECT department, SUM(salary) AS total\nFROM employees GROUP BY department;"},
+{label:"4 · Kombinert",code:"SELECT department, COUNT(*) AS ant, SUM(salary) AS sum, ROUND(AVG(salary),0) AS snitt\nFROM employees GROUP BY department ORDER BY sum DESC;"},
+{label:"5 · HAVING",code:"SELECT department, AVG(salary) AS snitt\nFROM employees GROUP BY department\nHAVING snitt > 60000;"},
+{label:"6 · Beregnet kolonne",code:"SELECT SUM(quantity * unit_price) AS omsetning\nFROM order_items;"},
+{label:"7 · Betinget SUM",code:"SELECT\n  SUM(CASE WHEN type='Inn' THEN amount ELSE 0 END) AS inntekter,\n  SUM(CASE WHEN type='Ut'  THEN amount ELSE 0 END) AS utgifter\nFROM transactions;"},
+{label:"8 · Via JOIN",code:"SELECT d.dept_name, SUM(e.salary) AS avd_kost\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name ORDER BY avd_kost DESC;"},
+{label:"9 · Sammenlign med totalt snitt",code:"SELECT department,\n  ROUND(AVG(salary), 0) AS avd_snitt,\n  ROUND((SELECT AVG(salary) FROM employees), 0) AS total_snitt,\n  ROUND(AVG(salary) - (SELECT AVG(salary) FROM employees), 0) AS diff\nFROM employees GROUP BY department;"},
+{label:"10 · Rullende sum (vindu)",code:"SELECT order_date, daily_tot,\n  SUM(daily_tot) OVER(ORDER BY order_date) AS kumulativ\nFROM (\n  SELECT DATE(order_date) AS order_date, SUM(amount) AS daily_tot\n  FROM orders GROUP BY DATE(order_date)\n) dag;"}
+]},
+{id:"min-max",cmd:"MIN() / MAX()",cat:"agg",catLabel:"AGGREGAT",
+desc:"Finn minste eller største verdi — fungerer på tall, datoer og tekst.",
+tags:["min","max","minimum","maksimum","ekstrem"],
+difficulty:"beginner",related:["group-by","sum-avg","order-by"],
+pitfalls:["MIN/MAX ignorerer NULL.","MIN på tekst er leksikografisk minimum."],
+when:["Finn ekstremverdier","Første/siste dato","Prisintervall per kategori"],
+examples:[
+{label:"1 · Laveste og høyeste lønn",code:"SELECT MIN(salary) AS lavest, MAX(salary) AS høyest FROM employees;"},
+{label:"2 · Tidligste og seneste bestilling",code:"SELECT MIN(order_date) AS første, MAX(order_date) AS siste\nFROM orders;"},
+{label:"3 · Per gruppe",code:"SELECT department, MIN(salary) AS min, MAX(salary) AS max,\n  MAX(salary)-MIN(salary) AS spenn\nFROM employees GROUP BY department;"},
+{label:"4 · Produkt med lavest pris",code:"SELECT name, price FROM products\nWHERE price = (SELECT MIN(price) FROM products);"},
+{label:"5 · MIN/MAX på tekst",code:"SELECT MIN(name) AS første_navn, MAX(name) AS siste_navn\nFROM employees;"},
+{label:"6 · Kombinert med COUNT/AVG",code:"SELECT department, COUNT(*) AS ant,\n  MIN(salary), MAX(salary), ROUND(AVG(salary),0) AS snitt\nFROM employees GROUP BY department;"},
+{label:"7 · Siste bestilling per kunde",code:"SELECT customer_id, MAX(order_date) AS siste\nFROM orders GROUP BY customer_id\nORDER BY siste DESC;"},
+{label:"8 · Finn raden med MIN via JOIN",code:"SELECT e.* FROM employees e\nJOIN (\n  SELECT dept_id, MIN(salary) AS min_sal\n  FROM employees GROUP BY dept_id\n) m ON e.dept_id = m.dept_id AND e.salary = m.min_sal;"},
+{label:"9 · MIN/MAX som vindufunksjon",code:"SELECT name, department, salary,\n  MIN(salary) OVER(PARTITION BY department) AS avd_min,\n  MAX(salary) OVER(PARTITION BY department) AS avd_max\nFROM employees;"},
+{label:"10 · Variasjonskoeffisient",code:"SELECT department,\n  MIN(salary), MAX(salary),\n  ROUND(AVG(salary), 0) AS snitt,\n  MAX(salary)-MIN(salary) AS spenn,\n  ROUND((MAX(salary)-MIN(salary)) / AVG(salary) * 100, 1) AS variasjon_pst\nFROM employees GROUP BY department;"}
+]},
+{id:"group-by",cmd:"GROUP BY / HAVING",cat:"agg",catLabel:"AGGREGAT",
+desc:"Grupper rader og filtrer grupper med aggregerte betingelser.",
+tags:["group by","having","aggregat","grupper","per gruppe","filtrer grupper"],
+difficulty:"intermediate",related:["count","sum-avg","window-over","rollup"],
+pitfalls:["HAVING er for grupper, WHERE er for rader.","Alle ikke-aggregerte kolonner i SELECT MÅ stå i GROUP BY."],
+when:["Aggreger per kategori","Filtrer grupper","Statistikk per gruppe"],
+examples:[
+{label:"1 · Enkel GROUP BY",code:"SELECT department, COUNT(*) AS ant FROM employees GROUP BY department;"},
+{label:"2 · HAVING",code:"SELECT department, COUNT(*) AS ant FROM employees\nGROUP BY department HAVING ant > 5;"},
+{label:"3 · Flere aggregater",code:"SELECT department, COUNT(*) AS ant, AVG(salary) AS snitt, MAX(salary) AS topp\nFROM employees GROUP BY department ORDER BY snitt DESC;"},
+{label:"4 · WHERE + GROUP BY",code:"SELECT department, AVG(salary) AS snitt\nFROM employees WHERE hire_date >= '2020-01-01'\nGROUP BY department;"},
+{label:"5 · GROUP BY + HAVING + ORDER BY",code:"SELECT department, COUNT(*) AS ant, SUM(salary) AS total\nFROM employees GROUP BY department\nHAVING total > 300000 ORDER BY total DESC;"},
+{label:"6 · Gruppe på dato",code:"SELECT DATE_FORMAT(order_date, '%Y-%m') AS mnd,\n  COUNT(*) AS ordrer, SUM(amount) AS omsetn\nFROM orders GROUP BY mnd ORDER BY mnd;"},
+{label:"7 · Via JOIN",code:"SELECT d.dept_name, COUNT(e.id) AS ant, SUM(e.salary) AS lønn\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.id, d.dept_name HAVING ant >= 3;"},
+{label:"8 · Finn duplikater",code:"SELECT email, COUNT(*) AS ant FROM users\nGROUP BY email HAVING ant > 1;"},
+{label:"9 · Gruppe på beregnet verdi",code:"SELECT CASE\n    WHEN salary < 50000  THEN '< 50k'\n    WHEN salary < 80000  THEN '50k–80k'\n    ELSE '80k+'\n  END AS lønnsbånd, COUNT(*) AS ant\nFROM employees GROUP BY lønnsbånd;"},
+{label:"10 · WITH ROLLUP",code:"SELECT COALESCE(department, 'TOTAL') AS avd,\n  COUNT(*) AS ant, SUM(salary) AS total\nFROM employees GROUP BY department WITH ROLLUP;"}
+]},
+{id:"rollup",cmd:"GROUP BY … WITH ROLLUP",cat:"agg",catLabel:"AGGREGAT",
+desc:"Generer delsum-rader og en totalsum automatisk med WITH ROLLUP.",
+tags:["rollup","delsummer","totalsum","grouping","rapportering"],
+difficulty:"advanced",related:["group-by"],
+pitfalls:["NULL i ROLLUP-raden representerer totalsum — bruk COALESCE for lesbarhet.","GROUPING(kol) skiller mellom ekte NULL og ROLLUP-NULL."],
+when:["Rapporter med totalsummer","Hierarkisk gruppering"],
+examples:[
+{label:"1 · Enkel ROLLUP",code:"SELECT department, SUM(salary) AS total\nFROM employees GROUP BY department WITH ROLLUP;"},
+{label:"2 · Med COALESCE",code:"SELECT COALESCE(department, 'TOTAL') AS avd,\n  COUNT(*) AS ant, SUM(salary) AS total\nFROM employees GROUP BY department WITH ROLLUP;"},
+{label:"3 · To grupperingsnivåer",code:"SELECT COALESCE(department, 'TOTAL') AS avd,\n  COALESCE(job_title, '--') AS tittel,\n  COUNT(*) AS ant\nFROM employees GROUP BY department, job_title WITH ROLLUP;"},
+{label:"4 · GROUPING() for ROLLUP-rader",code:"SELECT\n  IF(GROUPING(department), 'TOTAL', department) AS avd,\n  IF(GROUPING(job_title),  'Alle',  job_title)  AS tittel,\n  COUNT(*)\nFROM employees GROUP BY department, job_title WITH ROLLUP;"},
+{label:"5 · Kvartalsvis",code:"SELECT\n  COALESCE(CONCAT('Q', QUARTER(order_date)), 'ÅR-TOTAL') AS kvartal,\n  COUNT(*) AS ordrer, SUM(amount) AS total\nFROM orders WHERE YEAR(order_date) = 2024\nGROUP BY QUARTER(order_date) WITH ROLLUP;"},
+{label:"6 · Salgsrapport",code:"SELECT COALESCE(category, 'TOTAL') AS kat,\n  SUM(qty) AS stk, SUM(revenue) AS omsetn\nFROM sales GROUP BY category WITH ROLLUP\nORDER BY category IS NULL, omsetn DESC;"},
+{label:"7 · Budsjett vs faktisk",code:"SELECT COALESCE(dept, 'TOTAL') AS avd,\n  SUM(actual) AS faktisk, SUM(budget) AS budsjett,\n  SUM(actual)-SUM(budget) AS avvik\nFROM financials GROUP BY dept WITH ROLLUP;"},
+{label:"8 · Via JOIN + ROLLUP",code:"SELECT COALESCE(d.dept_name, 'TOTALT') AS avd,\n  COUNT(e.id) AS ant, SUM(e.salary) AS lønn\nFROM departments d JOIN employees e ON e.dept_id = d.id\nGROUP BY d.dept_name WITH ROLLUP;"},
+{label:"9 · Tre nivåer",code:"SELECT COALESCE(region, 'ALLE') AS reg,\n  COALESCE(category, 'ALLE') AS kat,\n  SUM(revenue) AS tot\nFROM sales GROUP BY region, category WITH ROLLUP;"},
+{label:"10 · Sorter ROLLUP-rad sist",code:"SELECT COALESCE(department, 'TOTAL') AS avd,\n  COUNT(*) AS ant, SUM(salary) AS total\nFROM employees GROUP BY department WITH ROLLUP\nORDER BY department IS NULL, total DESC;"}
+]},
+
+{id:"row-number",cmd:"ROW_NUMBER()",cat:"win",catLabel:"VINDU",
+desc:"Tildel et unikt fortløpende heltall til hver rad innenfor en partisjon.",
+tags:["row_number","radnummer","sekvens","topp n","fjern duplikater"],
+difficulty:"intermediate",related:["rank","window-over","cte"],
+pitfalls:["ROW_NUMBER gir alltid UNIKE tall.","Filtrer i CTE eller subquery, ikke i WHERE."],
+when:["Nummerér per gruppe","Topp-N per kategori","Fjern duplikater"],
+examples:[
+{label:"1 · Global nummerering",code:"SELECT ROW_NUMBER() OVER(ORDER BY salary DESC) AS rn, name, salary\nFROM employees;"},
+{label:"2 · Per avdeling",code:"SELECT name, department, salary,\n  ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) AS rn\nFROM employees;"},
+{label:"3 · Topp 3 per avdeling",code:"SELECT * FROM (\n  SELECT name, department, salary,\n    ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) AS rn\n  FROM employees\n) t WHERE rn <= 3;"},
+{label:"4 · Siste ordre per kunde",code:"SELECT * FROM (\n  SELECT *, ROW_NUMBER() OVER(PARTITION BY customer_id ORDER BY order_date DESC) AS rn\n  FROM orders\n) t WHERE rn = 1;"},
+{label:"5 · Fjern duplikater",code:"DELETE FROM users WHERE id NOT IN (\n  SELECT min_id FROM (\n    SELECT MIN(id) AS min_id FROM users GROUP BY email\n  ) t\n);"},
+{label:"6 · Paginering",code:"SELECT * FROM (\n  SELECT *, ROW_NUMBER() OVER(ORDER BY name) AS rn FROM employees\n) t WHERE rn BETWEEN 11 AND 20;"},
+{label:"7 · N-te rad",code:"SELECT * FROM (\n  SELECT *, ROW_NUMBER() OVER(ORDER BY salary DESC) AS rn FROM employees\n) t WHERE rn = 5;"},
+{label:"8 · Første ny ansatt etter 2020",code:"SELECT * FROM (\n  SELECT name, department, hire_date,\n    ROW_NUMBER() OVER(PARTITION BY department ORDER BY hire_date) AS nr\n  FROM employees WHERE hire_date >= '2020-01-01'\n) t WHERE nr = 1;"},
+{label:"9 · ROW_NUMBER + AVG kombinert",code:"SELECT name, department, salary,\n  ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) AS rang,\n  AVG(salary) OVER(PARTITION BY department) AS avd_snitt\nFROM employees ORDER BY department, rang;"},
+{label:"10 · Sekvens-ID for eksport",code:"SELECT ROW_NUMBER() OVER(ORDER BY id) AS seq, id, name, salary\nFROM employees;"}
+]},
+{id:"rank",cmd:"RANK() / DENSE_RANK()",cat:"win",catLabel:"VINDU",
+desc:"Ranger rader. RANK hopper over tall ved liktopp; DENSE_RANK gjør det ikke.",
+tags:["rank","dense_rank","rangering","ledertavle"],
+difficulty:"intermediate",related:["row-number","window-over"],
+pitfalls:["RANK: 1,2,2,4. DENSE_RANK: 1,2,2,3."],
+when:["Ledertavle","Salgsrangering","Persentilanalyse"],
+examples:[
+{label:"1 · RANK global",code:"SELECT name, salary, RANK() OVER(ORDER BY salary DESC) AS rang FROM employees;"},
+{label:"2 · DENSE_RANK global",code:"SELECT name, salary, DENSE_RANK() OVER(ORDER BY salary DESC) AS rang FROM employees;"},
+{label:"3 · RANK per avdeling",code:"SELECT name, department, salary,\n  RANK() OVER(PARTITION BY department ORDER BY salary DESC) AS rang\nFROM employees;"},
+{label:"4 · Topp 3 rangeringer",code:"SELECT * FROM (\n  SELECT name, salary, DENSE_RANK() OVER(ORDER BY salary DESC) AS dr FROM employees\n) t WHERE dr <= 3;"},
+{label:"5 · Alle tre rang-funksjoner",code:"SELECT name, salary,\n  ROW_NUMBER() OVER(ORDER BY salary DESC) AS row_n,\n  RANK()       OVER(ORDER BY salary DESC) AS rank_n,\n  DENSE_RANK() OVER(ORDER BY salary DESC) AS dense_n\nFROM employees ORDER BY salary DESC;"},
+{label:"6 · Vinner per kategori",code:"SELECT * FROM (\n  SELECT category, product, revenue,\n    RANK() OVER(PARTITION BY category ORDER BY revenue DESC) AS rang\n  FROM product_sales\n) t WHERE rang = 1;"},
+{label:"7 · PERCENT_RANK",code:"SELECT name, salary,\n  ROUND(PERCENT_RANK() OVER(ORDER BY salary)*100, 1) AS persentil\nFROM employees ORDER BY salary;"},
+{label:"8 · NTILE — kvartiler",code:"SELECT name, salary,\n  NTILE(4) OVER(ORDER BY salary) AS kvartil\nFROM employees ORDER BY kvartil, salary;"},
+{label:"9 · Salgsrangering per kvartal",code:"SELECT seller, quarter, sales,\n  RANK() OVER(PARTITION BY quarter ORDER BY sales DESC) AS rang\nFROM quarterly_sales ORDER BY quarter, rang;"},
+{label:"10 · Sammenlign RANK og ROW_NUMBER",code:"SELECT name, salary,\n  RANK()       OVER(ORDER BY salary DESC) AS rank_nr,\n  ROW_NUMBER() OVER(ORDER BY salary DESC) AS row_nr\nFROM employees ORDER BY salary DESC;"}
+]},
+{id:"lag-lead",cmd:"LAG() / LEAD()",cat:"win",catLabel:"VINDU",
+desc:"Hent verdi fra forrige (LAG) eller neste (LEAD) rad.",
+tags:["lag","lead","forrige rad","neste rad","mom","yoy","differanse"],
+difficulty:"intermediate",related:["window-over","running-total"],
+pitfalls:["Første rad: LAG returnerer NULL. Angi standardverdi som 3. parameter."],
+when:["MoM-endring","Forrige/neste verdi","Hendelsestidsanalyse"],
+examples:[
+{label:"1 · LAG — forrige måned",code:"SELECT month, revenue,\n  LAG(revenue) OVER(ORDER BY month) AS forrige\nFROM monthly_sales;"},
+{label:"2 · LAG med standard",code:"SELECT month, revenue,\n  LAG(revenue, 1, 0) OVER(ORDER BY month) AS forrige\nFROM monthly_sales;"},
+{label:"3 · Beregn endring",code:"SELECT month, revenue,\n  revenue - LAG(revenue) OVER(ORDER BY month) AS endring\nFROM monthly_sales;"},
+{label:"4 · Prosentvis MoM",code:"SELECT month, revenue,\n  ROUND((revenue-LAG(revenue) OVER(ORDER BY month))\n    / LAG(revenue) OVER(ORDER BY month)*100, 1) AS pst\nFROM monthly_sales;"},
+{label:"5 · LEAD — neste rad",code:"SELECT name, hire_date,\n  LEAD(hire_date) OVER(ORDER BY hire_date) AS neste_ansettelse\nFROM employees;"},
+{label:"6 · LAG per partisjon",code:"SELECT dept, month, revenue,\n  LAG(revenue) OVER(PARTITION BY dept ORDER BY month) AS forrige\nFROM dept_sales;"},
+{label:"7 · N perioder tilbake",code:"SELECT month, revenue,\n  LAG(revenue, 3) OVER(ORDER BY month) AS for_3_mnd\nFROM monthly_sales;"},
+{label:"8 · Tid til neste hendelse",code:"SELECT user_id, event_time,\n  TIMESTAMPDIFF(MINUTE, event_time,\n    LEAD(event_time) OVER(PARTITION BY user_id ORDER BY event_time)\n  ) AS min_til_neste\nFROM user_events;"},
+{label:"9 · Statusendringer",code:"SELECT id, status, changed_at,\n  LAG(status) OVER(PARTITION BY order_id ORDER BY changed_at) AS forrige_status\nFROM order_status_log;"},
+{label:"10 · År-over-år",code:"SELECT år, omsetning,\n  LAG(omsetning) OVER(ORDER BY år) AS forrige_år,\n  ROUND((omsetning-LAG(omsetning) OVER(ORDER BY år))\n    / LAG(omsetning) OVER(ORDER BY år)*100, 1) AS yoy\nFROM (\n  SELECT YEAR(order_date) AS år, SUM(amount) AS omsetning\n  FROM orders GROUP BY YEAR(order_date)\n) årdata;"}
+]},
+{id:"running-total",cmd:"SUM() OVER — Løpende total",cat:"win",catLabel:"VINDU",
+desc:"Kumulativ sum, løpende total og glidende gjennomsnitt med vindusrammer.",
+tags:["løpende total","kumulativ","glidende","running total","rows between"],
+difficulty:"intermediate",related:["window-over","lag-lead"],
+pitfalls:["ROWS BETWEEN er eksakt — RANGE inkluderer rader med lik ORDER BY-verdi."],
+when:["Kumulativ sum","Løpende saldo","Glidende snitt"],
+examples:[
+{label:"1 · Enkel kumulativ sum",code:"SELECT date, revenue,\n  SUM(revenue) OVER(ORDER BY date) AS kumulativ\nFROM daily_sales;"},
+{label:"2 · Eksplisitt ROWS-ramme",code:"SELECT date, revenue,\n  SUM(revenue) OVER(\n    ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n  ) AS kumulativ\nFROM daily_sales;"},
+{label:"3 · Glidende 3-dagers snitt",code:"SELECT date, revenue,\n  ROUND(AVG(revenue) OVER(\n    ORDER BY date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n  ), 2) AS snitt_3d\nFROM daily_sales;"},
+{label:"4 · Glidende 7-dagers sum",code:"SELECT date, revenue,\n  SUM(revenue) OVER(\n    ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ) AS uke_sum\nFROM daily_sales;"},
+{label:"5 · Per avdeling",code:"SELECT dept, hire_date, name, salary,\n  SUM(salary) OVER(\n    PARTITION BY dept ORDER BY hire_date\n    ROWS UNBOUNDED PRECEDING\n  ) AS kum_lønn\nFROM employees;"},
+{label:"6 · Kumulativ prosent av total",code:"SELECT name, salary,\n  SUM(salary) OVER(ORDER BY salary) AS kumulativ,\n  ROUND(SUM(salary) OVER(ORDER BY salary) / SUM(salary) OVER()*100, 1) AS kum_pst\nFROM employees;"},
+{label:"7 · Løpende maksimum",code:"SELECT date, val,\n  MAX(val) OVER(ORDER BY date ROWS UNBOUNDED PRECEDING) AS hittil_maks\nFROM daily_records;"},
+{label:"8 · Besøksstrekk 7 dager",code:"SELECT date, visitors,\n  ROUND(AVG(visitors) OVER(\n    ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ), 0) AS snitt_7d\nFROM web_stats;"},
+{label:"9 · Kumulativ vs total",code:"SELECT month, revenue,\n  SUM(revenue) OVER(ORDER BY month ROWS UNBOUNDED PRECEDING) AS kumulativ,\n  SUM(revenue) OVER() AS total_år,\n  ROUND(SUM(revenue) OVER(ORDER BY month ROWS UNBOUNDED PRECEDING)\n    / SUM(revenue) OVER()*100, 1) AS kum_pst\nFROM monthly_sales;"},
+{label:"10 · Løpende COUNT",code:"SELECT order_date, order_id,\n  COUNT(*) OVER(ORDER BY order_date ROWS UNBOUNDED PRECEDING) AS kum_ordrer\nFROM orders ORDER BY order_date;"}
+]},
+{id:"window-over",cmd:"OVER (PARTITION BY / ORDER BY)",cat:"win",catLabel:"VINDU",
+desc:"Definer vindusrammen — bruk aggregatfunksjoner uten å fjerne rader.",
+tags:["over","partition by","order by","vindu","first_value","last_value"],
+difficulty:"intermediate",related:["row-number","running-total","lag-lead","rank"],
+pitfalls:["Uten PARTITION BY er hele resultatet ett vindu.","ROWS er presis, RANGE er fleksibel."],
+when:["Beregn per gruppe uten GROUP BY","Referanseberegninger","Prosentvis fordeling"],
+examples:[
+{label:"1 · AVG uten GROUP BY",code:"SELECT name, department, salary,\n  AVG(salary) OVER(PARTITION BY department) AS avd_snitt\nFROM employees;"},
+{label:"2 · SUM totalt",code:"SELECT name, salary,\n  SUM(salary) OVER() AS total,\n  ROUND(salary/SUM(salary) OVER()*100, 1) AS prosent\nFROM employees;"},
+{label:"3 · COUNT per gruppe",code:"SELECT name, department,\n  COUNT(*) OVER(PARTITION BY department) AS ant_i_avd\nFROM employees;"},
+{label:"4 · FIRST_VALUE",code:"SELECT name, department, salary,\n  FIRST_VALUE(name) OVER(PARTITION BY department ORDER BY salary DESC) AS topp_tjener\nFROM employees;"},
+{label:"5 · LAST_VALUE",code:"SELECT name, salary,\n  LAST_VALUE(salary) OVER(\n    PARTITION BY department ORDER BY salary\n    ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n  ) AS høyest_i_avd\nFROM employees;"},
+{label:"6 · Prosent av avdelingstotal",code:"SELECT name, department, salary,\n  ROUND(salary/SUM(salary) OVER(PARTITION BY department)*100, 1) AS pst_av_avd\nFROM employees;"},
+{label:"7 · Avvik fra avdelingssnitt",code:"SELECT name, department, salary,\n  ROUND(salary - AVG(salary) OVER(PARTITION BY department), 0) AS diff\nFROM employees;"},
+{label:"8 · Kumulativ COUNT per avd",code:"SELECT name, department, hire_date,\n  COUNT(*) OVER(\n    PARTITION BY department ORDER BY hire_date\n    ROWS UNBOUNDED PRECEDING\n  ) AS ansatt_nr\nFROM employees;"},
+{label:"9 · Alle vindufunksjoner sammen",code:"SELECT name, department, salary,\n  ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) AS rn,\n  RANK()       OVER(PARTITION BY department ORDER BY salary DESC) AS r,\n  AVG(salary)  OVER(PARTITION BY department) AS avd_snitt,\n  SUM(salary)  OVER(PARTITION BY department ORDER BY salary) AS kum\nFROM employees ORDER BY department, salary DESC;"},
+{label:"10 · ROWS vs RANGE",code:"SELECT date, amount,\n  SUM(amount) OVER(ORDER BY date ROWS  BETWEEN 1 PRECEDING AND CURRENT ROW) AS rows_s,\n  SUM(amount) OVER(ORDER BY date RANGE BETWEEN 1 PRECEDING AND CURRENT ROW) AS range_s\nFROM sales;"}
+]},
+{id:"cte",cmd:"WITH (CTE)",cat:"cte",catLabel:"CTE",
+desc:"Gi en delspørring et navn og referer til den som en tabell (MySQL 8.0+).",
+tags:["cte","with","felles tabelluttrykk","navngitt subquery","modulær"],
+difficulty:"intermediate",related:["recursive-cte","subquery","create-view"],
+pitfalls:["CTEer beregnes på nytt hver referanse — ikke hurtigbuffer.","Krever MySQL 8.0+."],
+when:["Del opp komplekse spørringer","Erstatt nestede subqueries","Lesbarhet"],
+examples:[
+{label:"1 · Enkel CTE",code:"WITH høytlønte AS (\n  SELECT * FROM employees WHERE salary > 80000\n)\nSELECT department, COUNT(*) FROM høytlønte GROUP BY department;"},
+{label:"2 · CTE med JOIN",code:"WITH topp AS (\n  SELECT customer_id, SUM(amount) AS total\n  FROM orders GROUP BY customer_id HAVING total > 10000\n)\nSELECT c.name, t.total\nFROM customers c JOIN topp t ON t.customer_id = c.id;"},
+{label:"3 · Kjedede CTEer",code:"WITH avd_stats AS (\n  SELECT dept_id, AVG(salary) AS snitt FROM employees GROUP BY dept_id\n),\ntopp_avd AS (SELECT * FROM avd_stats WHERE snitt > 70000)\nSELECT d.dept_name, t.snitt FROM departments d\nJOIN topp_avd t ON t.dept_id = d.id;"},
+{label:"4 · CTE forenkler subquery",code:"WITH total_snitt AS (SELECT AVG(salary) AS snitt FROM employees)\nSELECT name, salary FROM employees, total_snitt\nWHERE salary > snitt;"},
+{label:"5 · CTE med vindufunksjon",code:"WITH ranked AS (\n  SELECT name, department, salary,\n    DENSE_RANK() OVER(PARTITION BY department ORDER BY salary DESC) AS rang\n  FROM employees\n)\nSELECT * FROM ranked WHERE rang = 1;"},
+{label:"6 · To CTEer i én spørring",code:"WITH snitt AS (SELECT AVG(salary) AS s FROM employees),\n     ant   AS (SELECT COUNT(*) AS n FROM employees)\nSELECT s AS snitt, n AS antall, s*n AS total FROM snitt, ant;"},
+{label:"7 · CTE for z-score",code:"WITH stats AS (\n  SELECT AVG(salary) AS mu, STDDEV(salary) AS sd FROM employees\n)\nSELECT e.name, e.salary,\n  ROUND((e.salary - s.mu)/s.sd, 2) AS z_score\nFROM employees e, stats s\nORDER BY ABS((e.salary - s.mu)/s.sd) DESC;"},
+{label:"8 · CTE + INSERT",code:"WITH dyr_avd AS (\n  SELECT dept_id FROM employees\n  GROUP BY dept_id HAVING AVG(salary) > 70000\n)\nINSERT INTO budget_alerts (dept_id, created)\nSELECT dept_id, NOW() FROM dyr_avd;"},
+{label:"9 · CTE for månedlig rapport",code:"WITH månedlig AS (\n  SELECT DATE_FORMAT(order_date, '%Y-%m') AS mnd, SUM(amount) AS tot\n  FROM orders GROUP BY mnd\n)\nSELECT mnd, tot, SUM(tot) OVER(ORDER BY mnd) AS kumulativ\nFROM månedlig ORDER BY mnd;"},
+{label:"10 · Tre-CTE pipeline",code:"WITH raw AS (SELECT * FROM sales WHERE YEAR(date) = 2024),\nagg    AS (SELECT category, SUM(revenue) AS tot FROM raw GROUP BY category),\nranked AS (SELECT *, RANK() OVER(ORDER BY tot DESC) AS rang FROM agg)\nSELECT * FROM ranked WHERE rang <= 5;"}
+]},
+{id:"recursive-cte",cmd:"Rekursiv CTE",cat:"cte",catLabel:"CTE",
+desc:"Traverser hierarkiske data som trær og grafer (MySQL 8.0+).",
+tags:["rekursiv","hierarki","tre","org-kart","stykkliste","graf"],
+difficulty:"advanced",related:["cte","self-join"],
+pitfalls:["RECURSIVE-nøkkelordet er PÅKREVD.","Uten avslutningsbetingelse: stopper ved cte_max_recursion_depth (1000)."],
+when:["Org-kart","Alle underordnede","Tallserier og datoer"],
+examples:[
+{label:"1 · Enkel org-kart",code:"WITH RECURSIVE org AS (\n  SELECT id, name, manager_id, 0 AS nivå\n  FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id, o.nivå + 1\n  FROM employees e JOIN org o ON e.manager_id = o.id\n)\nSELECT nivå, name FROM org ORDER BY nivå, name;"},
+{label:"2 · Med visuelt innrykk",code:"WITH RECURSIVE org AS (\n  SELECT id, name, manager_id, 0 AS n,\n    CAST(name AS CHAR(300)) AS sti\n  FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id, o.n + 1,\n    CONCAT(o.sti, ' → ', e.name)\n  FROM employees e JOIN org o ON e.manager_id = o.id\n)\nSELECT CONCAT(REPEAT('  ', n), name) AS hierarki FROM org ORDER BY sti;"},
+{label:"3 · Alle underordnede",code:"WITH RECURSIVE sub AS (\n  SELECT id, name, manager_id FROM employees WHERE id = 5\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id\n  FROM employees e JOIN sub s ON e.manager_id = s.id\n)\nSELECT * FROM sub;"},
+{label:"4 · Tallserie 1–100",code:"WITH RECURSIVE tall AS (\n  SELECT 1 AS n\n  UNION ALL\n  SELECT n + 1 FROM tall WHERE n < 100\n)\nSELECT n FROM tall;"},
+{label:"5 · Datoserie",code:"WITH RECURSIVE datoer AS (\n  SELECT CAST('2024-01-01' AS DATE) AS d\n  UNION ALL\n  SELECT DATE_ADD(d, INTERVAL 1 DAY) FROM datoer WHERE d < '2024-12-31'\n)\nSELECT d FROM datoer;"},
+{label:"6 · Stykkliste (BOM)",code:"WITH RECURSIVE bom AS (\n  SELECT id, name, parent_id, qty, 1 AS nivå\n  FROM parts WHERE parent_id IS NULL\n  UNION ALL\n  SELECT p.id, p.name, p.parent_id, p.qty, b.nivå + 1\n  FROM parts p JOIN bom b ON p.parent_id = b.id\n)\nSELECT CONCAT(REPEAT('  ', nivå-1), name) AS del, qty FROM bom;"},
+{label:"7 · Sti fra rot til node",code:"WITH RECURSIVE sti AS (\n  SELECT id, name, manager_id, CAST(name AS CHAR(500)) AS path\n  FROM employees WHERE id = 42\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id, CONCAT(e.name, ' → ', s.path)\n  FROM employees e JOIN sti s ON e.id = s.manager_id\n)\nSELECT path FROM sti WHERE manager_id IS NULL;"},
+{label:"8 · Begrenset dybde",code:"WITH RECURSIVE org AS (\n  SELECT id, name, manager_id, 1 AS nivå\n  FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, e.name, e.manager_id, o.nivå + 1\n  FROM employees e JOIN org o ON e.manager_id = o.id\n  WHERE o.nivå < 3\n)\nSELECT * FROM org ORDER BY nivå;"},
+{label:"9 · Akkumulert kostnad",code:"WITH RECURSIVE proj AS (\n  SELECT id, name, parent_id, cost, cost AS total\n  FROM tasks WHERE parent_id IS NULL\n  UNION ALL\n  SELECT t.id, t.name, t.parent_id, t.cost, p.total + t.cost\n  FROM tasks t JOIN proj p ON t.parent_id = p.id\n)\nSELECT name, cost, total FROM proj;"},
+{label:"10 · Finn maks dybde",code:"WITH RECURSIVE dybde AS (\n  SELECT id, 0 AS d FROM employees WHERE manager_id IS NULL\n  UNION ALL\n  SELECT e.id, dybde.d + 1 FROM employees e\n  JOIN dybde ON e.manager_id = dybde.id\n)\nSELECT MAX(d) AS maks_nivåer FROM dybde;"}
+]},
+{id:"subquery",cmd:"Delspørring (Subquery)",cat:"sub",catLabel:"DELSPØRRING",
+desc:"En spørring nøstet inne i en annen — i WHERE, FROM eller SELECT.",
+tags:["subquery","delspørring","nøstet","korrelert","avledet tabell"],
+difficulty:"intermediate",related:["cte","exists","in-list"],
+pitfalls:["Korrelerte subqueries kjøres én gang PER RAD — bruk CTE/JOIN for ytelse."],
+when:["Filter mot beregnet verdi","Avledet tabell","Korrelert beregning"],
+examples:[
+{label:"1 · WHERE skalar",code:"SELECT * FROM employees WHERE salary > (SELECT AVG(salary) FROM employees);"},
+{label:"2 · FROM avledet tabell",code:"SELECT avd, snitt FROM (\n  SELECT department AS avd, AVG(salary) AS snitt\n  FROM employees GROUP BY department\n) t WHERE snitt > 60000;"},
+{label:"3 · SELECT korrelert",code:"SELECT name, salary,\n  (SELECT AVG(salary) FROM employees e2 WHERE e2.dept_id = e.dept_id) AS avd_snitt\nFROM employees e;"},
+{label:"4 · IN med subquery",code:"SELECT * FROM employees\nWHERE dept_id IN (SELECT id FROM departments WHERE location = 'Oslo');"},
+{label:"5 · NOT IN med subquery",code:"SELECT name FROM employees\nWHERE id NOT IN (SELECT DISTINCT employee_id FROM projects WHERE active = 1);"},
+{label:"6 · Høyeste lønn per avd",code:"SELECT e.name, e.salary, e.department FROM employees e\nWHERE salary = (SELECT MAX(salary) FROM employees e2 WHERE e2.department = e.department);"},
+{label:"7 · HAVING med subquery",code:"SELECT department, AVG(salary) AS snitt FROM employees\nGROUP BY department\nHAVING AVG(salary) > (SELECT AVG(salary) FROM employees);"},
+{label:"8 · JOIN med avledet tabell",code:"SELECT e.name, t.avd_snitt FROM employees e\nJOIN (SELECT dept_id, AVG(salary) AS avd_snitt\n      FROM employees GROUP BY dept_id) t ON e.dept_id = t.dept_id\nWHERE e.salary > t.avd_snitt;"},
+{label:"9 · Dobbelt nøstet",code:"SELECT name, salary FROM employees\nWHERE salary > (\n  SELECT MAX(snitt) FROM (\n    SELECT AVG(salary) AS snitt FROM employees GROUP BY department\n  ) avg_tab\n);"},
+{label:"10 · CTE vs subquery",code:"-- Subquery (vanskelig):\nSELECT name FROM employees WHERE dept_id IN\n  (SELECT id FROM departments WHERE budget > (SELECT AVG(budget) FROM departments));\n\n-- CTE (lettere):\nWITH høy AS (\n  SELECT id FROM departments WHERE budget > (SELECT AVG(budget) FROM departments)\n)\nSELECT name FROM employees WHERE dept_id IN (SELECT id FROM høy);"}
+]},
+{id:"exists",cmd:"EXISTS / NOT EXISTS",cat:"sub",catLabel:"DELSPØRRING",
+desc:"Sjekk om en korrelert delspørring returnerer minst én rad — effektivt.",
+tags:["exists","not exists","semi-join","anti-join","sjekk"],
+difficulty:"intermediate",related:["subquery","in-list","left-join"],
+pitfalls:["NOT IN + NULL i listen = tomt resultat. Bruk NOT EXISTS.","Bruk SELECT 1, ikke SELECT *."],
+when:["Finn rader med tilhørende post","Anti-join uten LEFT JOIN","Sikker NOT IN alternativ"],
+examples:[
+{label:"1 · Kunder med bestillinger",code:"SELECT * FROM customers c\nWHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);"},
+{label:"2 · Kunder uten bestillinger",code:"SELECT * FROM customers c\nWHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);"},
+{label:"3 · Med betingelse",code:"SELECT name FROM products p\nWHERE EXISTS (SELECT 1 FROM order_items oi\n  WHERE oi.product_id = p.id AND oi.quantity > 10);"},
+{label:"4 · EXISTS i UPDATE",code:"UPDATE products p SET p.popular = 1\nWHERE EXISTS (\n  SELECT 1 FROM order_items oi WHERE oi.product_id = p.id\n  GROUP BY oi.product_id HAVING COUNT(*) > 100\n);"},
+{label:"5 · NOT EXISTS i DELETE",code:"DELETE FROM products p\nWHERE NOT EXISTS (SELECT 1 FROM order_items oi WHERE oi.product_id = p.id);"},
+{label:"6 · Dobbelt EXISTS",code:"SELECT c.name FROM customers c\nWHERE EXISTS (\n  SELECT 1 FROM orders o WHERE o.customer_id = c.id AND EXISTS (\n    SELECT 1 FROM order_items oi JOIN products p ON p.id = oi.product_id\n    WHERE oi.order_id = o.id AND p.category = 'Elektronikk'\n  )\n);"},
+{label:"7 · EXISTS vs IN ytelse",code:"-- EXISTS stopper ved første treff — effektiv\nSELECT name FROM employees e\nWHERE EXISTS (SELECT 1 FROM projects p WHERE p.manager_id = e.id);"},
+{label:"8 · Sjekk om tabell er tom",code:"SELECT CASE WHEN EXISTS(SELECT 1 FROM employees)\n  THEN 'Ikke tom' ELSE 'Tom' END AS status;"},
+{label:"9 · Unngå duplikat ved INSERT",code:"INSERT INTO subscribers (email, created_at)\nSELECT 'ny@example.com', NOW()\nWHERE NOT EXISTS (SELECT 1 FROM subscribers WHERE email = 'ny@example.com');"},
+{label:"10 · Mange betingelser",code:"SELECT e.name FROM employees e\nWHERE EXISTS (SELECT 1 FROM projects p WHERE p.manager_id = e.id)\n  AND EXISTS (SELECT 1 FROM bonuses b WHERE b.employee_id = e.id AND b.year = 2024)\n  AND NOT EXISTS (SELECT 1 FROM disciplinary d WHERE d.employee_id = e.id);"}
+]},
+{id:"create-table",cmd:"CREATE TABLE",cat:"ddl",catLabel:"DDL",
+desc:"Definer en ny MySQL-tabell med kolonner, datatyper og begrensninger.",
+tags:["create table","auto_increment","primary key","foreign key","check","enum","innodb"],
+difficulty:"beginner",related:["alter-table","create-index","create-view"],
+pitfalls:["AUTO_INCREMENT er MySQL-spesifikt.","Fremmednøkler krever lik datatype og InnoDB."],
+when:["Opprett ny tabell","Definer schema","Sett opp begrensninger"],
+examples:[
+{label:"1 · Minimal tabell",code:"CREATE TABLE products (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  name VARCHAR(100) NOT NULL\n);"},
+{label:"2 · Grunnleggende ansatt-tabell",code:"CREATE TABLE employees (\n  id         INT AUTO_INCREMENT PRIMARY KEY,\n  name       VARCHAR(100) NOT NULL,\n  email      VARCHAR(255) UNIQUE NOT NULL,\n  salary     DECIMAL(10,2) DEFAULT 0.00,\n  hire_date  DATE,\n  is_active  TINYINT(1) DEFAULT 1\n);"},
+{label:"3 · Med fremmednøkkel",code:"CREATE TABLE orders (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  customer_id INT NOT NULL,\n  order_date  DATETIME DEFAULT CURRENT_TIMESTAMP,\n  total       DECIMAL(12,2),\n  FOREIGN KEY (customer_id) REFERENCES customers(id)\n    ON DELETE RESTRICT ON UPDATE CASCADE\n);"},
+{label:"4 · Med CHECK og ENUM",code:"CREATE TABLE employees (\n  id      INT AUTO_INCREMENT PRIMARY KEY,\n  name    VARCHAR(100) NOT NULL,\n  gender  ENUM('Mann','Kvinne','Annet'),\n  age     INT CHECK (age >= 18 AND age <= 70),\n  created TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);"},
+{label:"5 · Sammensatt primærnøkkel",code:"CREATE TABLE order_items (\n  order_id   INT NOT NULL,\n  product_id INT NOT NULL,\n  qty        INT NOT NULL DEFAULT 1,\n  unit_price DECIMAL(10,2) NOT NULL,\n  PRIMARY KEY (order_id, product_id),\n  FOREIGN KEY (order_id)   REFERENCES orders(id) ON DELETE CASCADE,\n  FOREIGN KEY (product_id) REFERENCES products(id)\n);"},
+{label:"6 · Med indekser",code:"CREATE TABLE logs (\n  id         INT AUTO_INCREMENT PRIMARY KEY,\n  user_id    INT NOT NULL,\n  action     VARCHAR(100),\n  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n  INDEX idx_user (user_id),\n  INDEX idx_date (created_at)\n);"},
+{label:"7 · IF NOT EXISTS",code:"CREATE TABLE IF NOT EXISTS categories (\n  id        INT AUTO_INCREMENT PRIMARY KEY,\n  name      VARCHAR(100) UNIQUE NOT NULL,\n  parent_id INT DEFAULT NULL,\n  FOREIGN KEY (parent_id) REFERENCES categories(id)\n);"},
+{label:"8 · Kopiér struktur og data",code:"CREATE TABLE employees_backup AS SELECT * FROM employees;\nCREATE TABLE employees_tom LIKE employees;  -- kun struktur"},
+{label:"9 · FULLTEXT-indeks",code:"CREATE TABLE articles (\n  id    INT AUTO_INCREMENT PRIMARY KEY,\n  title VARCHAR(255) NOT NULL,\n  body  TEXT,\n  FULLTEXT ft_search (title, body)\n) ENGINE=InnoDB;"},
+{label:"10 · Komplett ordresystem",code:"CREATE TABLE customers (\n  id      INT AUTO_INCREMENT PRIMARY KEY,\n  name    VARCHAR(100) NOT NULL,\n  email   VARCHAR(255) UNIQUE NOT NULL,\n  phone   VARCHAR(20),\n  city    VARCHAR(100),\n  created DATETIME DEFAULT CURRENT_TIMESTAMP\n);\nCREATE TABLE products (\n  id       INT AUTO_INCREMENT PRIMARY KEY,\n  name     VARCHAR(200) NOT NULL,\n  price    DECIMAL(10,2) NOT NULL CHECK(price>=0),\n  stock    INT NOT NULL DEFAULT 0,\n  category VARCHAR(100)\n);\nCREATE TABLE orders (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  customer_id INT NOT NULL,\n  order_date  DATETIME DEFAULT CURRENT_TIMESTAMP,\n  status      ENUM('Ny','Behandles','Sendt','Levert','Kansellert') DEFAULT 'Ny',\n  FOREIGN KEY (customer_id) REFERENCES customers(id)\n);\nCREATE TABLE order_items (\n  order_id   INT NOT NULL,\n  product_id INT NOT NULL,\n  qty        INT NOT NULL,\n  unit_price DECIMAL(10,2) NOT NULL,\n  PRIMARY KEY (order_id, product_id),\n  FOREIGN KEY (order_id)   REFERENCES orders(id) ON DELETE CASCADE,\n  FOREIGN KEY (product_id) REFERENCES products(id)\n);"}
+]},
+{id:"alter-table",cmd:"ALTER TABLE",cat:"ddl",catLabel:"DDL",
+desc:"Legg til, endre eller slett kolonner og begrensninger i en eksisterende tabell.",
+tags:["alter table","add column","drop column","modify column","rename"],
+difficulty:"intermediate",related:["create-table","create-index"],
+pitfalls:["ALTER TABLE låser tabellen på store produksjonstabeller.","Endre datatype til inkompatibel type kan miste data."],
+when:["Legg til/fjern kolonne","Endre datatype","Legg til begrensninger"],
+examples:[
+{label:"1 · Legg til kolonne",code:"ALTER TABLE employees ADD COLUMN phone VARCHAR(20);"},
+{label:"2 · Med posisjon",code:"ALTER TABLE employees ADD COLUMN phone VARCHAR(20) AFTER email;"},
+{label:"3 · Slett kolonne",code:"ALTER TABLE employees DROP COLUMN phone;"},
+{label:"4 · Endre datatype",code:"ALTER TABLE employees MODIFY COLUMN salary DECIMAL(12,2) NOT NULL DEFAULT 0;"},
+{label:"5 · Gi nytt navn (kolonne)",code:"ALTER TABLE employees RENAME COLUMN full_name TO name;"},
+{label:"6 · Gi nytt navn (tabell)",code:"ALTER TABLE old_name RENAME TO new_name;"},
+{label:"7 · Legg til UNIQUE",code:"ALTER TABLE users ADD CONSTRAINT uq_email UNIQUE (email);"},
+{label:"8 · Legg til fremmednøkkel",code:"ALTER TABLE orders ADD CONSTRAINT fk_customer\nFOREIGN KEY (customer_id) REFERENCES customers(id)\nON DELETE CASCADE ON UPDATE CASCADE;"},
+{label:"9 · Slett fremmednøkkel",code:"ALTER TABLE orders DROP FOREIGN KEY fk_customer;"},
+{label:"10 · Flere endringer på én gang",code:"ALTER TABLE employees\n  ADD COLUMN phone    VARCHAR(20),\n  ADD COLUMN address  VARCHAR(255),\n  MODIFY COLUMN salary DECIMAL(12,2) NOT NULL DEFAULT 0,\n  ADD INDEX idx_dept (department);"}
+]},
+{id:"create-view",cmd:"CREATE VIEW",cat:"ddl",catLabel:"DDL",
+desc:"Lagre en navngitt spørring som en virtuell tabell.",
+tags:["view","virtuell tabell","create view","forenkle","abstraksjon"],
+difficulty:"intermediate",related:["cte","create-table"],
+pitfalls:["VIEW beregnes på nytt ved hver tilgang.","Oppdaterbar VIEW krever enkel SELECT (ingen GROUP BY/DISTINCT/UNION)."],
+when:["Forenkle komplekse spørringer","Tilgangskontroll","Abstraksjonslag"],
+examples:[
+{label:"1 · Enkel VIEW",code:"CREATE VIEW aktive_ansatte AS\nSELECT * FROM employees WHERE termination_date IS NULL;"},
+{label:"2 · Bruk VIEW",code:"SELECT * FROM aktive_ansatte WHERE department = 'IT';"},
+{label:"3 · VIEW med JOIN",code:"CREATE VIEW ansatte_med_avd AS\nSELECT e.name, e.salary, d.dept_name\nFROM employees e JOIN departments d ON e.dept_id = d.id;"},
+{label:"4 · Sikkerhets-VIEW",code:"CREATE VIEW kunder_public AS\nSELECT id, name, city FROM customers;\n-- Skjuler e-post og kredittkort"},
+{label:"5 · CREATE OR REPLACE",code:"CREATE OR REPLACE VIEW aktive_ansatte AS\nSELECT id, name, department, salary\nFROM employees WHERE termination_date IS NULL;"},
+{label:"6 · VIEW med aggregering",code:"CREATE VIEW avd_statistikk AS\nSELECT department, COUNT(*) AS ant, AVG(salary) AS snitt\nFROM employees GROUP BY department;"},
+{label:"7 · Slett VIEW",code:"DROP VIEW IF EXISTS aktive_ansatte;"},
+{label:"8 · Liste alle VIEWer",code:"SELECT table_name, view_definition\nFROM information_schema.views\nWHERE table_schema = DATABASE();"},
+{label:"9 · Oppdaterbar VIEW",code:"CREATE VIEW it_ansatte AS\nSELECT id, name, salary FROM employees WHERE department = 'IT';\nUPDATE it_ansatte SET salary = 75000 WHERE id = 5;"},
+{label:"10 · Kompleks VIEW for rapport",code:"CREATE VIEW ordre_oversikt AS\nSELECT o.id, c.name AS kunde,\n  COUNT(oi.product_id) AS ant_prod,\n  SUM(oi.qty * oi.unit_price) AS total\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nGROUP BY o.id, c.name;"}
+]},
+{id:"create-index",cmd:"CREATE INDEX / EXPLAIN",cat:"idx",catLabel:"INDEKS",
+desc:"Bygg oppslagsstruktur og analyser spørringsplanen med EXPLAIN.",
+tags:["index","explain","ytelse","b-tree","fulltext","raskere spørring"],
+difficulty:"intermediate",related:["create-table","alter-table"],
+pitfalls:["For mange indekser bremser INSERT/UPDATE/DELETE.","type=ALL i EXPLAIN = full tabellskanning."],
+when:["Optimalisere trege spørringer","WHERE/JOIN/ORDER BY-kolonner","Analysere plan"],
+examples:[
+{label:"1 · Enkel indeks",code:"CREATE INDEX idx_dept ON employees(department);"},
+{label:"2 · Unik indeks",code:"CREATE UNIQUE INDEX idx_email ON users(email);"},
+{label:"3 · Sammensatt indeks",code:"CREATE INDEX idx_dept_sal ON employees(department, salary);"},
+{label:"4 · Slett indeks",code:"ALTER TABLE employees DROP INDEX idx_dept;"},
+{label:"5 · Vis indekser",code:"SHOW INDEX FROM employees;"},
+{label:"6 · FULLTEXT-indeks",code:"CREATE FULLTEXT INDEX ft_search ON articles(title, body);\nSELECT * FROM articles\nWHERE MATCH(title, body) AGAINST('mysql spørring');"},
+{label:"7 · EXPLAIN — sjekk plan",code:"EXPLAIN SELECT * FROM employees WHERE department='IT' AND salary>60000;"},
+{label:"8 · EXPLAIN FORMAT=JSON",code:"EXPLAIN FORMAT=JSON\nSELECT e.name, d.dept_name FROM employees e\nJOIN departments d ON e.dept_id = d.id WHERE e.salary > 50000;"},
+{label:"9 · EXPLAIN ANALYZE (8.0.18+)",code:"EXPLAIN ANALYZE\nSELECT * FROM employees WHERE department = 'IT';"},
+{label:"10 · Optimal indeksstrategi",code:"-- Spørring:\nSELECT * FROM orders WHERE customer_id=5 AND status='Ny'\nORDER BY order_date DESC;\n\n-- Optimal sammensatt indeks:\nCREATE INDEX idx_cust_status_date\n  ON orders(customer_id, status, order_date);\n\n-- Bekreft at den brukes:\nEXPLAIN SELECT * FROM orders WHERE customer_id=5 AND status='Ny'\nORDER BY order_date DESC;"}
+]},
+{id:"transaction",cmd:"START TRANSACTION / COMMIT / ROLLBACK",cat:"txn",catLabel:"TRANSAKSJON",
+desc:"Grupper SQL-setninger til én atomisk enhet — alt lykkes eller alt angres.",
+tags:["transaction","commit","rollback","savepoint","acid","atomisk"],
+difficulty:"intermediate",related:["update","delete","upsert"],
+pitfalls:["Glem ikke COMMIT — åpne transaksjoner låser rader!","TRUNCATE kan IKKE rulles tilbake.","autocommit=ON som standard."],
+when:["Pengeoverføringer","Batch-oppdateringer som MÅ gå gjennom","Sikker sletting"],
+examples:[
+{label:"1 · Enkel transaksjon",code:"START TRANSACTION;\nUPDATE accounts SET balance = balance - 500 WHERE id = 1;\nUPDATE accounts SET balance = balance + 500 WHERE id = 2;\nCOMMIT;"},
+{label:"2 · Med ROLLBACK",code:"START TRANSACTION;\nDELETE FROM orders WHERE id = 99;\nDELETE FROM order_items WHERE order_id = 99;\nROLLBACK;  -- ingenting slettes"},
+{label:"3 · SAVEPOINT",code:"START TRANSACTION;\nINSERT INTO audit_log (msg) VALUES ('Start');\nSAVEPOINT etter_logg;\nDELETE FROM temp_data WHERE batch_id = 5;\nROLLBACK TO SAVEPOINT etter_logg;\nCOMMIT;  -- audit_log-raden beholdes"},
+{label:"4 · Sjekk autocommit",code:"SHOW VARIABLES LIKE 'autocommit';\nSET autocommit = 0;\n-- HUSK: sett tilbake etter bruk\nSET autocommit = 1;"},
+{label:"5 · Batch INSERT i transaksjon",code:"START TRANSACTION;\nINSERT INTO products (name, price) VALUES ('A', 99);\nINSERT INTO products (name, price) VALUES ('B', 199);\nINSERT INTO products (name, price) VALUES ('C', 299);\nCOMMIT;"},
+{label:"6 · FOR UPDATE (eksklusiv lås)",code:"START TRANSACTION;\nSELECT * FROM inventory WHERE product_id = 5 FOR UPDATE;\nUPDATE inventory SET stock = stock - 1 WHERE product_id = 5;\nCOMMIT;"},
+{label:"7 · Datamigrering",code:"START TRANSACTION;\nINSERT INTO new_customers SELECT * FROM customers WHERE migrated = 0;\nUPDATE customers SET migrated = 1 WHERE migrated = 0;\nUPDATE migration_log SET completed = NOW();\nCOMMIT;"},
+{label:"8 · READ ONLY transaksjon",code:"START TRANSACTION READ ONLY;\nSELECT * FROM accounts WHERE user_id = 42;\nSELECT SUM(amount) FROM transactions WHERE user_id = 42;\nCOMMIT;"},
+{label:"9 · ROW_COUNT()-sjekk",code:"START TRANSACTION;\nUPDATE accounts SET balance = balance - 1000\n  WHERE id = 1 AND balance >= 1000;\n-- Sjekk om oppdatering faktisk skjedde\n-- (i en lagret prosedyre eller applikasjon)\nSELECT ROW_COUNT();\nCOMMIT;"},
+{label:"10 · Nestede SAVEPOINTs",code:"START TRANSACTION;\nINSERT INTO orders (customer_id) VALUES (1);\nSAVEPOINT ordre_ok;\nINSERT INTO order_items VALUES (LAST_INSERT_ID(), 5, 2, 299);\nSAVEPOINT vare1_ok;\nINSERT INTO order_items VALUES (LAST_INSERT_ID(), 9, 1, 499);\nROLLBACK TO SAVEPOINT vare1_ok;  -- vare 9 angres\nCOMMIT;"}
+]},
+
+{id:"op-sammenligning",cmd:"Sammenligningsoperatorer",cat:"op",catLabel:"OPERATORER",
+desc:"Sammenlign verdier i WHERE, HAVING, CASE og JOIN — kjernen i all filtrering.",
+tags:["=","!=","<>","<",">","<=",">=","<=>","null-sikker","sammenligning"],
+difficulty:"beginner",related:["where","op-logisk","null-check"],
+theory:"<h4>Sammenligningsoperatorer i MySQL</h4><table><tr><th>Operator</th><th>Betydning</th><th>Eksempel</th><th>Merknad</th></tr><tr><td>=</td><td>Lik</td><td>salary = 70000</td><td>NULL = NULL → FALSE</td></tr><tr><td>!= eller &lt;&gt;</td><td>Ikke lik</td><td>dept != 'HR'</td><td>Begge fungerer</td></tr><tr><td>&lt;</td><td>Mindre enn</td><td>price &lt; 100</td><td>Tall, tekst, dato</td></tr><tr><td>&gt;</td><td>Større enn</td><td>salary &gt; 50000</td><td></td></tr><tr><td>&lt;=</td><td>Mindre eller lik</td><td>age &lt;= 65</td><td></td></tr><tr><td>&gt;=</td><td>Større eller lik</td><td>score &gt;= 90</td><td></td></tr><tr><td>&lt;=&gt;</td><td>NULL-sikker lik</td><td>col &lt;=&gt; NULL</td><td>Ekvivalent IS NULL</td></tr></table><p><strong>NULL =</strong> noe → ALLTID FALSE. Bruk IS NULL eller &lt;=&gt;.</p>",
+pitfalls:["= NULL er alltid FALSE — bruk IS NULL.","!= og <> er identiske i MySQL."],
+when:["= og != for likhet/ulikhet","< > <= >= for tall og dato","<=> for NULL-sikker"],
+examples:[
+{label:"1 · Lik (=)",code:"SELECT * FROM employees WHERE department = 'IT';"},
+{label:"2 · Ikke lik (!=)",code:"SELECT * FROM employees WHERE department != 'HR';"},
+{label:"3 · Ikke lik (<>)",code:"SELECT * FROM employees WHERE department <> 'HR';\n-- Identisk med !="},
+{label:"4 · Større enn",code:"SELECT * FROM products WHERE price > 500;"},
+{label:"5 · Mindre eller lik",code:"SELECT * FROM employees WHERE age <= 65;"},
+{label:"6 · Dato-sammenligning",code:"SELECT * FROM orders WHERE order_date >= '2024-01-01';"},
+{label:"7 · To kolonner mot hverandre",code:"SELECT * FROM orders WHERE actual_delivery > expected_delivery;"},
+{label:"8 · NULL-sikker <=>",code:"SELECT * FROM employees WHERE manager_id <=> NULL;\n-- Ekvivalent med: WHERE manager_id IS NULL"},
+{label:"9 · Sammenligning i CASE",code:"SELECT name,\n  CASE\n    WHEN salary > 80000 THEN 'Høy'\n    WHEN salary >= 50000 THEN 'Normal'\n    ELSE 'Lav'\n  END AS nivå\nFROM employees;"},
+{label:"10 · NULL-sikker JOIN med <=>",code:"SELECT a.name, b.name AS kollega\nFROM employees a\nJOIN employees b ON a.manager_id <=> b.manager_id\nWHERE a.id < b.id;"}
+]},
+{id:"op-logisk",cmd:"Logiske operatorer (AND / OR / NOT / XOR)",cat:"op",catLabel:"OPERATORER",
+desc:"Kombiner betingelser — AND, OR, NOT og XOR for kompleks filtrering.",
+tags:["and","or","not","xor","logisk","prioritet","betingelse"],
+difficulty:"beginner",related:["where","op-sammenligning","case-when"],
+theory:"<h4>Logiske operatorer og prioritet</h4><div class='fm'>Prioritet (høy → lav): NOT → AND → OR → XOR</div><p><code>a OR b AND c</code> evalueres som <code>a OR (b AND c)</code> — bruk parenteser!</p><h4>NULL-logikk (tre-verdig logikk):</h4><table><tr><th>Uttrykk</th><th>Resultat</th></tr><tr><td>NULL AND TRUE</td><td>NULL</td></tr><tr><td>NULL AND FALSE</td><td>FALSE</td></tr><tr><td>NULL OR TRUE</td><td>TRUE</td></tr><tr><td>NULL OR FALSE</td><td>NULL</td></tr><tr><td>NOT NULL</td><td>NULL</td></tr></table>",
+pitfalls:["AND har høyere prioritet enn OR — bruk parenteser.","NOT NULL = NULL (ikke TRUE!)."],
+when:["AND: begge sanne","OR: minst én sann","NOT: inverter","XOR: nøyaktig én"],
+examples:[
+{label:"1 · AND",code:"SELECT * FROM employees WHERE department='IT' AND salary>60000;"},
+{label:"2 · OR",code:"SELECT * FROM employees WHERE department='IT' OR department='HR';"},
+{label:"3 · NOT",code:"SELECT * FROM employees WHERE NOT department='HR';"},
+{label:"4 · Parenteser",code:"SELECT * FROM employees\nWHERE (department='IT' OR department='Eng')\n  AND salary > 60000;"},
+{label:"5 · Prioritetsfelle",code:"-- Feil: dept='IT' OR dept='HR' AND salary>60k\n-- Evalueres som: dept='IT' OR (dept='HR' AND salary>60k)\n-- Riktig:\nSELECT * FROM employees\nWHERE (department='IT' OR department='HR') AND salary > 60000;"},
+{label:"6 · Tre AND",code:"SELECT * FROM orders\nWHERE status='Ny'\n  AND amount > 1000\n  AND order_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY);"},
+{label:"7 · XOR",code:"SELECT * FROM employees WHERE (salary>70000) XOR (years_exp>10);\n-- Høy lønn ELLER mye erfaring, men IKKE begge"},
+{label:"8 · NOT IN kombinert",code:"SELECT * FROM products\nWHERE category NOT IN ('Arkivert','Utkast') AND price > 0;"},
+{label:"9 · NULL-logikk",code:"SELECT NULL OR TRUE;    -- TRUE\nSELECT NULL OR FALSE;   -- NULL (ikke FALSE!)\nSELECT NULL AND FALSE;  -- FALSE\nSELECT NOT NULL;        -- NULL"},
+{label:"10 · Kompleks kombinasjon",code:"SELECT * FROM employees\nWHERE (\n    (department='IT' AND salary > 70000)\n    OR (department='Engineering' AND salary > 75000)\n  )\n  AND hire_date >= '2018-01-01'\n  AND manager_id IS NOT NULL\n  AND NOT (job_title LIKE '%Intern%');"}
+]},
+{id:"op-aritmetisk",cmd:"Aritmetiske operatorer",cat:"op",catLabel:"OPERATORER",
+desc:"Matematiske beregninger: +, -, *, /, DIV, MOD (%).",
+tags:["+","-","*","/","mod","div","aritmetikk","beregning","modulus"],
+difficulty:"beginner",related:["select-cmd","math-fn"],
+theory:"<h4>Aritmetiske operatorer i MySQL</h4><table><tr><th>Op</th><th>Beskrivelse</th><th>Eksempel</th><th>Resultat</th></tr><tr><td>+</td><td>Addisjon</td><td>5 + 3</td><td>8</td></tr><tr><td>-</td><td>Subtraksjon</td><td>10 - 4</td><td>6</td></tr><tr><td>*</td><td>Multiplikasjon</td><td>4 * 3</td><td>12</td></tr><tr><td>/</td><td>Divisjon (desimal)</td><td>7 / 2</td><td>3.5</td></tr><tr><td>DIV</td><td>Heltallsdivisjon</td><td>7 DIV 2</td><td>3</td></tr><tr><td>% / MOD</td><td>Modulus</td><td>7 % 2</td><td>1</td></tr></table><p><strong>Viktig:</strong> Divisjon med 0 gir NULL i MySQL (ikke feil). Bruk NULLIF() for å håndtere det.</p>",
+pitfalls:["7/2 = 3.5 (ikke 3!) i MySQL.","NULL smitter: 5 + NULL = NULL.","Divisjon med 0 = NULL."],
+when:["Beregn årslønn","Prosentvise endringer","Modulus-aritmetikk"],
+examples:[
+{label:"1 · Addisjon",code:"SELECT salary + 5000 AS ny_lønn FROM employees;"},
+{label:"2 · Årslønn",code:"SELECT name, salary, salary*12 AS årslønn FROM employees;"},
+{label:"3 · Mva-beregning",code:"SELECT order_id, amount, amount*0.10 AS mva, amount*1.10 AS med_mva\nFROM orders;"},
+{label:"4 · Divisjon",code:"SELECT total_revenue / total_orders AS snitt_per_ordre\nFROM sales_summary;"},
+{label:"5 · DIV — heltallsdivisjon",code:"SELECT 17 DIV 5;   -- 3\nSELECT 100 DIV 7;  -- 14"},
+{label:"6 · Modulus (%)",code:"SELECT id FROM numbers WHERE id % 2 = 0;  -- partall\nSELECT MOD(17, 5);  -- 2"},
+{label:"7 · Unngå divisjon med NULL/0",code:"SELECT name, total / NULLIF(antall, 0) AS snitt FROM rapport;"},
+{label:"8 · Prosentvis endring (vindu)",code:"SELECT month, revenue,\n  ROUND((revenue-LAG(revenue) OVER(ORDER BY month))\n    /LAG(revenue) OVER(ORDER BY month)*100, 1) AS pst\nFROM monthly_sales;"},
+{label:"9 · Aritmetikk + betingelse",code:"SELECT name, salary,\n  CASE WHEN salary + IFNULL(bonus, 0) > 100000\n    THEN 'Høytlønnet' ELSE 'Normal'\n  END AS status\nFROM employees;"},
+{label:"10 · Rabatt og netto",code:"SELECT order_id, amount,\n  ROUND(amount * 0.15, 2) AS rabatt,\n  ROUND(amount * 0.85, 2) AS netto\nFROM orders WHERE amount >= 10000;"}
+]},
+{id:"op-streng",cmd:"Streng- og mønsteroperatorer",cat:"op",catLabel:"OPERATORER",
+desc:"Tekstmønstergjenkjenning: LIKE, REGEXP, BINARY, MATCH AGAINST.",
+tags:["like","regexp","rlike","binary","fulltext","mønster","wildcards"],
+difficulty:"intermediate",related:["where","string-fn"],
+theory:"<h4>Mønster- og strengoperatorer</h4><table><tr><th>Operator</th><th>Beskrivelse</th><th>Bruker indeks?</th></tr><tr><td>LIKE 'A%'</td><td>Prefix-mønster</td><td>✅ Ja</td></tr><tr><td>LIKE '%A'</td><td>Suffix</td><td>❌ Nei</td></tr><tr><td>LIKE '%A%'</td><td>Inneholder</td><td>❌ Nei</td></tr><tr><td>REGEXP / RLIKE</td><td>Regulært uttrykk</td><td>❌ Nei</td></tr><tr><td>LIKE BINARY</td><td>Case-sensitivt</td><td>Begrenset</td></tr><tr><td>MATCH … AGAINST</td><td>Fulltekstsøk</td><td>✅ FULLTEXT</td></tr></table>",
+pitfalls:["LIKE '%søk%' bruker IKKE B-tree-indeks — tregt.","MySQL LIKE er case-insensitivt som standard."],
+when:["Enkle mønstre: LIKE","Avanserte: REGEXP","Case-sensitivt: BINARY","Fulltekst: MATCH"],
+examples:[
+{label:"1 · LIKE prefix",code:"SELECT * FROM employees WHERE name LIKE 'A%';"},
+{label:"2 · LIKE suffix",code:"SELECT * FROM employees WHERE name LIKE '%sen';"},
+{label:"3 · LIKE inneholder",code:"SELECT * FROM products WHERE description LIKE '%trådløs%';"},
+{label:"4 · LIKE ett tegn",code:"SELECT * FROM codes WHERE code LIKE 'A_1';\n-- A01, AB1, AC1, men ikke A001"},
+{label:"5 · REGEXP — tegnsett",code:"SELECT * FROM employees WHERE name REGEXP '^[ABC]';\n-- starter med A, B eller C"},
+{label:"6 · REGEXP — valider e-post",code:"SELECT email FROM users\nWHERE email REGEXP '^[a-zA-Z0-9._%+\\\\-]+@[a-zA-Z0-9.\\\\-]+\\\\.[a-zA-Z]{2,}$';"},
+{label:"7 · REGEXP — norsk telefon",code:"SELECT * FROM customers\nWHERE phone REGEXP '^(\\\\+47|0047)?[0-9]{8}$';"},
+{label:"8 · LIKE BINARY",code:"SELECT * FROM products WHERE name LIKE BINARY '%iPhone%';\n-- Treffer 'iPhone' men ikke 'IPHONE'"},
+{label:"9 · FULLTEXT MATCH AGAINST",code:"-- Krever FULLTEXT-indeks:\nSELECT * FROM articles\nWHERE MATCH(title, body) AGAINST('mysql spørring' IN BOOLEAN MODE);"},
+{label:"10 · REGEXP_REPLACE / SUBSTR (8.0+)",code:"SELECT REGEXP_REPLACE(phone, '[^0-9]', '') AS rent_tlf FROM customers;\nSELECT REGEXP_SUBSTR(address, '[0-9]+') AS husnr FROM customers;"}
+]},
+{id:"op-mengde",cmd:"Mengde- og listeoperatorer",cat:"op",catLabel:"OPERATORER",
+desc:"IN, NOT IN, BETWEEN, ANY, ALL, EXISTS, IS NULL — for mengde- og listefiltrering.",
+tags:["in","not in","between","any","all","exists","is null","mengde"],
+difficulty:"intermediate",related:["where","exists","in-list","null-check"],
+theory:"<h4>Mengde- og listeoperatorer</h4><table><tr><th>Operator</th><th>Beskrivelse</th><th>Eksempel</th></tr><tr><td>IN (liste)</td><td>Verdi i lista</td><td>dept IN ('IT','HR')</td></tr><tr><td>NOT IN</td><td>Ikke i lista</td><td>dept NOT IN ('HR')</td></tr><tr><td>BETWEEN x AND y</td><td>Innenfor intervall</td><td>sal BETWEEN 50000 AND 80000</td></tr><tr><td>ANY / SOME</td><td>Minst én i subquery</td><td>sal &gt; ANY(SELECT...)</td></tr><tr><td>ALL</td><td>Alle i subquery</td><td>sal &gt; ALL(SELECT...)</td></tr><tr><td>EXISTS</td><td>Subquery har rader</td><td>EXISTS(SELECT 1...)</td></tr><tr><td>IS NULL</td><td>NULL-sjekk</td><td>manager_id IS NULL</td></tr></table>",
+pitfalls:["NOT IN + NULL = tomt resultat.","ANY/ALL er sjeldent brukt — EXISTS/IN er ofte bedre."],
+when:["IN for lister","BETWEEN for intervaller","ANY/ALL for subquery-sammenligning"],
+examples:[
+{label:"1 · IN",code:"SELECT * FROM employees WHERE department IN ('IT','Finance','HR');"},
+{label:"2 · NOT IN",code:"SELECT * FROM products WHERE category NOT IN ('Arkivert','Utkast');"},
+{label:"3 · BETWEEN",code:"SELECT * FROM employees WHERE salary BETWEEN 50000 AND 80000;"},
+{label:"4 · ANY — minst én",code:"SELECT name, salary FROM employees\nWHERE salary > ANY(SELECT salary FROM employees WHERE department='HR');\n-- Høyere enn minst én HR-ansatt"},
+{label:"5 · ALL — alle",code:"SELECT name, salary FROM employees\nWHERE salary > ALL(SELECT salary FROM employees WHERE department='HR');\n-- Høyere enn ALLE HR-ansatte"},
+{label:"6 · = ANY (= IN)",code:"SELECT * FROM employees\nWHERE dept_id = ANY(SELECT id FROM departments WHERE location='Oslo');"},
+{label:"7 · != ALL (= NOT IN)",code:"SELECT * FROM employees\nWHERE dept_id != ALL(SELECT id FROM departments WHERE location='Bergen');"},
+{label:"8 · EXISTS",code:"SELECT * FROM customers c\nWHERE EXISTS(SELECT 1 FROM orders o WHERE o.customer_id = c.id);"},
+{label:"9 · IS NULL",code:"SELECT * FROM employees WHERE manager_id IS NULL;"},
+{label:"10 · Kombiner alt",code:"SELECT e.name, e.salary FROM employees e\nWHERE e.department IN ('IT','Engineering')\n  AND e.salary BETWEEN 50000 AND 120000\n  AND e.hire_date IS NOT NULL\n  AND EXISTS(SELECT 1 FROM projects p WHERE p.manager_id = e.id)\n  AND e.id NOT IN (SELECT employee_id FROM disciplinary_records);"}
+]},
+{id:"op-bitvis",cmd:"Bitvise operatorer",cat:"op",catLabel:"OPERATORER",
+desc:"Bitoperasjoner for flagg-kolonner og lavnivå numerisk manipulasjon.",
+tags:["bitvis","bitwise","&","|","^","~","<<",">>","flagg","bitmask"],
+difficulty:"advanced",related:["op-aritmetisk","op-logisk"],
+theory:"<h4>Bitvise operatorer i MySQL</h4><table><tr><th>Op</th><th>Navn</th><th>Eksempel</th><th>Resultat</th></tr><tr><td>&amp;</td><td>Bitvis AND</td><td>6 &amp; 3</td><td>2</td></tr><tr><td>|</td><td>Bitvis OR</td><td>6 | 3</td><td>7</td></tr><tr><td>^</td><td>Bitvis XOR</td><td>6 ^ 3</td><td>5</td></tr><tr><td>~</td><td>Bitvis NOT</td><td>~0</td><td>18446744073709551615</td></tr><tr><td>&lt;&lt;</td><td>Venstreshift</td><td>1 &lt;&lt; 3</td><td>8</td></tr><tr><td>&gt;&gt;</td><td>Høyreshift</td><td>8 &gt;&gt; 2</td><td>2</td></tr></table><h4>Praktisk: Tillatelser som bitmask</h4><div class='fm'>LES=1, SKRIV=2, SLETT=4, ADMIN=8</div><p>Bruker med perms=7 (111) har LES+SKRIV+SLETT.</p>",
+pitfalls:["Bitvise op fungerer på 64-bits heltall.","BIT_COUNT() teller satte biter."],
+when:["Flagg/tillatelser som bitmask","Aktiver/deaktiver funksjoner","Lavnivå databehandling"],
+examples:[
+{label:"1 · Sjekk om bit er satt (&)",code:"-- LES=1, SKRIV=2, SLETT=4, ADMIN=8\nSELECT name FROM users WHERE permissions & 1;   -- har LES\nSELECT name FROM users WHERE permissions & 4;   -- har SLETT"},
+{label:"2 · Legg til rettighet (|)",code:"UPDATE users SET permissions = permissions | 4\nWHERE id = 42;  -- legg til SLETT"},
+{label:"3 · Fjern rettighet (& ~)",code:"UPDATE users SET permissions = permissions & ~4\nWHERE id = 42;  -- fjern SLETT"},
+{label:"4 · XOR — toggle flagg",code:"UPDATE products SET flags = flags ^ 1 WHERE id = 5;\n-- Toggle aktiv-bit"},
+{label:"5 · Venstreshift (2^n)",code:"SELECT 1 << 0;  -- 1   (LES)\nSELECT 1 << 1;  -- 2   (SKRIV)\nSELECT 1 << 2;  -- 4   (SLETT)\nSELECT 1 << 3;  -- 8   (ADMIN)"},
+{label:"6 · Høyreshift",code:"SELECT 256 >> 1;   -- 128\nSELECT 256 >> 4;   -- 16"},
+{label:"7 · Bitvis AND i WHERE",code:"SELECT * FROM users WHERE (permissions & 3) = 3;\n-- Brukere som har BÅDE LES og SKRIV"},
+{label:"8 · BIT_COUNT — antall flagg",code:"SELECT name, permissions, BIT_COUNT(permissions) AS rettigheter\nFROM users ORDER BY rettigheter DESC;"},
+{label:"9 · Finn ADMIN-brukere",code:"SELECT name FROM users WHERE permissions & 8 = 8;"},
+{label:"10 · Binærliteral",code:"-- b'1001' = 9 = LES + ADMIN\nSELECT * FROM users WHERE permissions & b'1000' = b'1000';"}
+]},
+{id:"string-fn",cmd:"Strengfunksjoner",cat:"fn",catLabel:"FUNKSJONER",
+desc:"Manipuler tekstverdier i MySQL: CONCAT, SUBSTRING, UPPER, LOWER osv.",
+tags:["string","concat","substring","upper","lower","trim","replace","length"],
+difficulty:"beginner",related:["regexp","date-fn","coalesce"],
+pitfalls:["CONCAT med NULL returnerer NULL — bruk CONCAT_WS eller COALESCE.","SUBSTRING er 1-indeksert."],
+when:["Rens tekstdata","Bygg nye strenger","Trekk ut deler"],
+examples:[
+{label:"1 · CONCAT",code:"SELECT CONCAT(first_name, ' ', last_name) AS fullt_navn FROM users;"},
+{label:"2 · CONCAT_WS",code:"SELECT CONCAT_WS(' ', first_name, middle_name, last_name) AS navn FROM users;"},
+{label:"3 · UPPER / LOWER",code:"SELECT UPPER(name) AS stor, LOWER(email) AS liten FROM employees;"},
+{label:"4 · TRIM",code:"SELECT TRIM('  Hei verden  ') AS ren;\nSELECT LTRIM('   venstre');\nSELECT RTRIM('høyre   ');"},
+{label:"5 · LENGTH / CHAR_LENGTH",code:"SELECT name, CHAR_LENGTH(name) AS tegn, LENGTH(name) AS bytes\nFROM employees;"},
+{label:"6 · SUBSTRING",code:"SELECT SUBSTRING('Hallo verden', 7, 6);  -- 'verden'\nSELECT SUBSTRING(phone, 1, 3) AS kode FROM users;"},
+{label:"7 · REPLACE",code:"SELECT REPLACE(phone, '-', '') AS rent_tlf FROM users;"},
+{label:"8 · LEFT / RIGHT",code:"SELECT LEFT(name, 3) AS init, RIGHT(phone, 8) AS nummer FROM employees;"},
+{label:"9 · LOCATE / brukernavn fra epost",code:"SELECT LOCATE('@', email) AS pos,\n  SUBSTRING(email, 1, LOCATE('@', email) - 1) AS brukernavn\nFROM users;"},
+{label:"10 · FORMAT, LPAD, RPAD",code:"SELECT\n  FORMAT(salary, 2, 'no_NO') AS formatert_lønn,\n  LPAD(id, 6, '0') AS paddet_id,\n  RPAD(name, 20, '.') AS navn_utfylt\nFROM employees;"}
+]},
+{id:"date-fn",cmd:"Datofunksjoner",cat:"fn",catLabel:"FUNKSJONER",
+desc:"Les, beregn og formater dato- og tidsverdier i MySQL.",
+tags:["date","datetime","now","curdate","datediff","date_format","year","month"],
+difficulty:"intermediate",related:["where","between","string-fn"],
+pitfalls:["DATEDIFF returnerer dager — bruk TIMESTAMPDIFF for andre enheter.","DATE_FORMAT bruker MySQL-spesifikk syntaks med %."],
+when:["Trekk ut datokomponenter","Beregn intervaller","Filtrer på dato"],
+examples:[
+{label:"1 · Dato og tid nå",code:"SELECT CURDATE(), NOW(), CURTIME();"},
+{label:"2 · Trekk ut komponenter",code:"SELECT YEAR(hire_date), MONTH(hire_date), DAY(hire_date)\nFROM employees;"},
+{label:"3 · DATEDIFF — dager",code:"SELECT name, DATEDIFF(CURDATE(), hire_date) AS dager_ansatt\nFROM employees;"},
+{label:"4 · TIMESTAMPDIFF — alle enheter",code:"SELECT\n  TIMESTAMPDIFF(YEAR,   birth_date, CURDATE()) AS alder,\n  TIMESTAMPDIFF(MONTH,  hire_date,  CURDATE()) AS måneder,\n  TIMESTAMPDIFF(MINUTE, created_at, NOW())     AS min_siden\nFROM employees;"},
+{label:"5 · DATE_ADD / DATE_SUB",code:"SELECT\n  DATE_ADD(CURDATE(), INTERVAL 30 DAY)  AS om_30d,\n  DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AS for_1år,\n  DATE_ADD(NOW(), INTERVAL 2 HOUR)     AS om_2t;"},
+{label:"6 · DATE_FORMAT",code:"SELECT DATE_FORMAT(hire_date, '%d.%m.%Y') AS norsk_dato\nFROM employees;\n-- 15.03.2022"},
+{label:"7 · Siste 30 dager",code:"SELECT * FROM orders\nWHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);"},
+{label:"8 · Per måned",code:"SELECT DATE_FORMAT(order_date, '%Y-%m') AS mnd,\n  COUNT(*) AS ordrer, SUM(amount) AS total\nFROM orders GROUP BY mnd ORDER BY mnd;"},
+{label:"9 · Alder",code:"SELECT name, birth_date,\n  TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS alder\nFROM persons ORDER BY alder;"},
+{label:"10 · STR_TO_DATE",code:"SELECT STR_TO_DATE('15/03/2024', '%d/%m/%Y') AS dato;\n-- Nyttig for import:\nUPDATE employees\nSET hire_date = STR_TO_DATE(hire_date_text, '%d.%m.%Y');"}
+]},
+{id:"math-fn",cmd:"Matematiske funksjoner",cat:"fn",catLabel:"FUNKSJONER",
+desc:"Avrunding, absoluttverdi, modulus og numeriske funksjoner.",
+tags:["round","floor","ceil","abs","sqrt","power","mod","matematikk"],
+difficulty:"beginner",related:["sum-avg","op-aritmetisk"],
+pitfalls:["Heltallsdivisjon: 7/2 = 3.5 i MySQL.","ROUND(2.5) = 3, ROUND(3.5) = 4."],
+when:["Avrunding","Absoluttverdi","Modulus","Statistikk"],
+examples:[
+{label:"1 · ROUND",code:"SELECT ROUND(3.14159, 2);  -- 3.14"},
+{label:"2 · FLOOR / CEIL",code:"SELECT FLOOR(3.9), CEIL(3.1);  -- 3, 4"},
+{label:"3 · ABS",code:"SELECT ABS(-42);  -- 42"},
+{label:"4 · MOD",code:"SELECT MOD(17, 5);  -- 2\nSELECT 17 % 5;     -- 2"},
+{label:"5 · SQRT / POW",code:"SELECT SQRT(16);     -- 4\nSELECT POW(2, 10);   -- 1024"},
+{label:"6 · TRUNCATE",code:"SELECT TRUNCATE(3.999, 2);  -- 3.99 (avkorting, ikke avrunding)"},
+{label:"7 · RAND",code:"SELECT RAND();              -- 0.0–1.0\nSELECT FLOOR(RAND() * 100); -- 0–99"},
+{label:"8 · Partall",code:"SELECT id, value FROM numbers WHERE value % 2 = 0;"},
+{label:"9 · Avrund til nærmeste 500",code:"SELECT name, price, ROUND(price/500)*500 AS nærmeste_500\nFROM products;"},
+{label:"10 · Statistikk",code:"SELECT\n  ROUND(AVG(salary), 2)    AS snitt,\n  ROUND(STDDEV(salary), 2) AS std,\n  ROUND(VARIANCE(salary), 2) AS varians,\n  ROUND(AVG(salary) + 2*STDDEV(salary), 2) AS topp_95pst\nFROM employees;"}
+]},
+{id:"coalesce",cmd:"COALESCE / IFNULL / NULLIF",cat:"fn",catLabel:"FUNKSJONER",
+desc:"Håndter NULL-verdier — sett standardverdi, unngå divisjon med 0.",
+tags:["coalesce","ifnull","nullif","null-håndtering","fallback","standardverdi"],
+difficulty:"beginner",related:["null-check","case-when"],
+pitfalls:["COALESCE evaluerer venstre-til-høyre.","NULLIF(x, 0) er nyttig for å unngå divisjon med 0."],
+when:["Erstatt NULL","Unngå divisjon med 0","Finn første tilgjengelige verdi"],
+examples:[
+{label:"1 · COALESCE — første ikke-NULL",code:"SELECT COALESCE(NULL, NULL, 'Tredje', 'Fjerde');  -- 'Tredje'"},
+{label:"2 · IFNULL — MySQL-kortform",code:"SELECT name, IFNULL(bonus, 0) AS bonus FROM employees;"},
+{label:"3 · COALESCE flere kolonner",code:"SELECT name,\n  COALESCE(mobile, phone, email, 'Ukjent') AS kontakt\nFROM customers;"},
+{label:"4 · NULLIF",code:"SELECT name, NULLIF(score, 0) AS score FROM results;\n-- Returnerer NULL i stedet for 0"},
+{label:"5 · Unngå divisjon med 0",code:"SELECT total / NULLIF(antall, 0) AS snitt FROM rapport;"},
+{label:"6 · COALESCE i beregning",code:"SELECT name, salary + COALESCE(bonus, 0) AS total_lønn\nFROM employees;"},
+{label:"7 · IF — enkel betingelse",code:"SELECT name, IF(salary > 70000, 'Høy', 'Normal') AS nivå\nFROM employees;"},
+{label:"8 · IFNULL i rapport",code:"SELECT IFNULL(category, 'Ukategorisert') AS kategori, COUNT(*) AS ant\nFROM products GROUP BY category;"},
+{label:"9 · Kjedet COALESCE",code:"UPDATE employees SET display_name =\n  COALESCE(nickname, CONCAT(first_name,' ',last_name), username);"},
+{label:"10 · NULLIF for konsistens",code:"-- Konverter tomme strenger til NULL\nUPDATE customers SET phone = NULLIF(TRIM(phone), '');"}
+]},
+{id:"normalisering-intro",cmd:"Normalisering — Introduksjon",cat:"nrm",catLabel:"NORMALISERING",
+desc:"Hvorfor normalisering? Forstå redundans, anomalier og funksjonelle avhengigheter.",
+tags:["normalisering","redundans","anomali","design","funksjonell avhengighet"],
+difficulty:"beginner",related:["nrm-1nf","nrm-2nf","nrm-3nf"],
+theory:"<h4>Hva er normalisering?</h4><p>Normalisering er prosessen med å organisere en relasjonsdatabase for å redusere <strong>redundans</strong> og forbedre <strong>dataintegritet</strong>.</p><h4>Tre problemer normalisering løser:</h4><ul><li><strong class='bad'>Insert-anomali:</strong> Kan ikke legge til data uten å ha annen data</li><li><strong class='bad'>Update-anomali:</strong> Må oppdatere samme data mange steder — risiko for inkonsistens</li><li><strong class='bad'>Delete-anomali:</strong> Sletting fjerner utilsiktet annen informasjon</li></ul><h4>Normalformene:</h4><table><tr><th>Form</th><th>Krav</th></tr><tr><td><strong>1NF</strong></td><td>Atomiske verdier, ingen gjentagende grupper, unik primærnøkkel</td></tr><tr><td><strong>2NF</strong></td><td>1NF + ingen DELVIS avhengighet av sammensatt PK</td></tr><tr><td><strong>3NF</strong></td><td>2NF + ingen TRANSITIV avhengighet via ikke-nøkkelkolonne</td></tr><tr><td>BCNF</td><td>Streng 3NF — enhver determinant er en kandidatnøkkel</td></tr></table><h4>Funksjonell avhengighet:</h4><div class='fm'>A → B betyr: hvis vi vet A, vet vi alltid B</div><p>Eks: <code>kunde_id → kundenavn</code></p>",
+pitfalls:["For mye normalisering = for mange JOINs.","Denormalisering kan være riktig for ytelse i spesifikke tilfeller."],
+when:["Forstå grunnprinsippene FØR normalisering","Identifiser funksjonelle avhengigheter","Unngå anomalier"],
+examples:[
+{label:"1 · Update-anomali",code:"-- ❌ avd_navn lagres for hver ansatt\n-- ID  Navn   AvdID  AvdNavn  AvdLeder\n-- 1   Alice  10     IT       Bob\n-- 2   Carol  10     IT       Bob   ← redundant\n-- 3   Dave   20     HR       Eve\n\n-- Endre IT-navn → MÅ oppdatere ALLE rader der AvdID=10\n-- Glemmer én rad → inkonsistens"},
+{label:"2 · Insert-anomali",code:"-- ❌ Tabell: ansatte (id, navn, avd_id, avd_navn)\n-- Kan ikke legge til avdeling 'Finance' uten ansatte\n-- → må sette inn dummy-rad eller bruke NULL\n-- Løsning: skill avdeling i egen tabell"},
+{label:"3 · Delete-anomali",code:"-- ❌ Tabell: ansatte (id, navn, avd_id, avd_navn, avd_leder)\n-- Sletter Dave (eneste i HR) → mister all info om HR\n-- avd_navn og avd_leder forsvinner med raden"},
+{label:"4 · Funksjonell avhengighet — identifiser",code:"-- Tabell: bestillinger(bestilling_id, produkt_id, produkt_navn, antall, kunde_id, kunde_navn)\n-- Avhengigheter:\n-- bestilling_id → kunde_id, dato        (PK bestemmer)\n-- produkt_id    → produkt_navn          (delvis!)\n-- kunde_id      → kunde_navn            (transitiv!)\n-- (bestilling_id, produkt_id) → antall  (avhenger av begge)"},
+{label:"5 · Kandidatnøkkel vs primærnøkkel",code:"-- Tabell: ansatte (id, personnummer, navn, avdeling)\n-- Kandidatnøkler: {id}, {personnummer}\n-- Primærnøkkel velges fra kandidatnøkler: id\n-- ALTER TABLE ansatte ADD UNIQUE (personnummer);"},
+{label:"6 · Transitiv avhengighet — eksempel",code:"-- Tabell: ansatte (id, avd_id, avd_sjef)\n-- id → avd_id     (direkte)\n-- avd_id → avd_sjef (direkte)\n-- id → avd_sjef    (TRANSITIV via avd_id)\n-- avd_sjef hører til avdelingen, ikke ansatt-tabellen"},
+{label:"7 · Multivalued (4NF, avansert)",code:"-- Tabell: kurs (kurs_id, lærer, bok)\n-- En kurs kan ha MANGE lærere og MANGE bøker, uavhengig\n-- Multivalued: kurs_id →→ lærer og kurs_id →→ bok\n-- Løsning: tre tabeller: kurs, kurs_lærere, kurs_bøker"},
+{label:"8 · Denormalisering — bevisst redundans",code:"-- Noen ganger denormaliserer vi for ytelse:\nCREATE TABLE orders (\n  id            INT AUTO_INCREMENT PRIMARY KEY,\n  customer_id   INT,\n  customer_name VARCHAR(100),  -- ← denormalisert (redundant)\n  -- Fordel: raskere lesing\n  -- Ulempe: kan bli utdatert\n  FOREIGN KEY (customer_id) REFERENCES customers(id)\n);"},
+{label:"9 · Test-spørsmål",code:"-- 1NF: Er alle verdier atomiske? Ingen gjentagende grupper?\n-- 2NF: Avhenger ALLE ikke-nøkkelkol av HELE PK?\n-- 3NF: Avhenger ALLE ikke-nøkkelkol DIREKTE av PK?"},
+{label:"10 · Normalisering vs ytelse",code:"-- 3NF: 3 JOINs for komplett ordre\nSELECT o.id, c.name, p.name, oi.qty\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p ON p.id = oi.product_id;\n\n-- Denormalisert (1 tabell, raskere):\nSELECT order_id, customer_name, product_name, qty\nFROM orders_flat;"}
+]},
+{id:"nrm-1nf",cmd:"1. Normalform (1NF)",cat:"nrm",catLabel:"NORMALISERING",
+desc:"Atomiske verdier, ingen gjentagende grupper, og en tydelig primærnøkkel.",
+tags:["1nf","første normalform","atomisk","gjentagende grupper","primærnøkkel"],
+difficulty:"beginner",related:["normalisering-intro","nrm-2nf","nrm-3nf"],
+theory:"<h4>1NF — Tre regler:</h4><ul><li><strong>① Atomiske verdier:</strong> Hver celle inneholder KUN én verdi</li><li><strong>② Ingen gjentagende grupper:</strong> Ikke kolonner som produkt1, produkt2, produkt3</li><li><strong>③ Primærnøkkel:</strong> Hver rad er unikt identifiserbar</li></ul><h4>Vanlige 1NF-brudd:</h4><table><tr><th>Brudd</th><th>Eksempel</th><th>Løsning</th></tr><tr><td>Kommaseparert</td><td>hobbyer = 'fotball,musikk'</td><td>Separat tabell</td></tr><tr><td>Gjentagende kolonner</td><td>tlf1, tlf2, tlf3</td><td>Separat tabell</td></tr><tr><td>Sammensatt celle</td><td>'Osloveien 1, 0123 Oslo'</td><td>Split kolonnen</td></tr></table>",
+pitfalls:["JSON-kolonner bryter teknisk 1NF — bruk med omhu.","Manglende primærnøkkel er alltid 1NF-brudd."],
+when:["Start her ved normalisering","Identifiser ikke-atomiske celler","Fjern gjentagende grupper"],
+steps:[
+{s:"Identifiser kolonner med ikke-atomiske verdier (kommaseparert osv.)"},
+{s:"Identifiser gjentagende kolonnegrupper (produkt1, produkt2, produkt3)"},
+{s:"Split ikke-atomiske verdier til egne tabeller"},
+{s:"Fjern gjentagende grupper — lag nye rader"},
+{s:"Definer en klar primærnøkkel"}
+],
+examples:[
+{label:"1 · FØR 1NF: gjentagende grupper",code:"-- ❌ BRYTER 1NF\nCREATE TABLE bestillinger_dårlig (\n  bestilling_id INT,\n  kundnavn      VARCHAR(100),\n  produkt1      VARCHAR(100),  -- gjentagende\n  antall1       INT,\n  produkt2      VARCHAR(100),  -- gjentagende\n  antall2       INT,\n  produkt3      VARCHAR(100),  -- gjentagende\n  antall3       INT\n);"},
+{label:"2 · ETTER 1NF: egne rader",code:"-- ✅ 1NF\nCREATE TABLE bestillinger (\n  bestilling_id INT,\n  kundnavn      VARCHAR(100),\n  produkt_navn  VARCHAR(100),\n  antall        INT,\n  PRIMARY KEY (bestilling_id, produkt_navn)\n);"},
+{label:"3 · FØR 1NF: kommaseparert",code:"-- ❌ BRYTER 1NF: kommaseparert i én celle\n-- ID  Navn    Telefoner\n-- 1   Alice   '99887766, 44556677'  ← FEIL"},
+{label:"4 · ETTER 1NF: separat tabell",code:"CREATE TABLE kunder (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100)\n);\nCREATE TABLE telefoner (\n  kunde_id  INT,\n  telefonnr VARCHAR(20),\n  type      ENUM('Mobil','Hjem','Jobb'),\n  PRIMARY KEY (kunde_id, telefonnr),\n  FOREIGN KEY (kunde_id) REFERENCES kunder(id)\n);"},
+{label:"5 · FØR 1NF: sammensatt adresse",code:"-- ❌ BRYTER 1NF: sammensatt verdi\n-- ID  Navn    Adresse\n-- 1   Alice   'Osloveien 1, 0123 Oslo, Norge'"},
+{label:"6 · ETTER 1NF: splittet",code:"CREATE TABLE kunder (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  by     VARCHAR(100),\n  land   VARCHAR(100) DEFAULT 'Norge'\n);"},
+{label:"7 · FØR 1NF: hobbyer som liste",code:"-- ❌ BRYTER 1NF\n-- ID  Navn    Hobbyer\n-- 1   Bob     'fotball; musikk; maling'\n-- 2   Alice   'yoga'"},
+{label:"8 · ETTER 1NF: hobbyer-tabell",code:"CREATE TABLE hobbyer (\n  person_id INT NOT NULL,\n  hobby     VARCHAR(100) NOT NULL,\n  PRIMARY KEY (person_id, hobby),\n  FOREIGN KEY (person_id) REFERENCES personer(id)\n);\nINSERT INTO hobbyer VALUES\n  (1,'fotball'), (1,'musikk'), (1,'maling'), (2,'yoga');"},
+{label:"9 · FØR 1NF: JSON-kolonne",code:"-- ❌ Bryter teknisk 1NF\nCREATE TABLE produkter (\n  id   INT PRIMARY KEY,\n  navn VARCHAR(100),\n  tags JSON  -- f.eks. [\"elektronikk\", \"pc\"]\n);"},
+{label:"10 · ETTER 1NF: relasjonell",code:"CREATE TABLE produkt_tags (\n  produkt_id INT NOT NULL,\n  tag        VARCHAR(50) NOT NULL,\n  PRIMARY KEY (produkt_id, tag),\n  FOREIGN KEY (produkt_id) REFERENCES produkter(id)\n);\nINSERT INTO produkt_tags VALUES (1,'elektronikk'),(1,'pc'),(1,'laptop');"}
+]},
+{id:"nrm-2nf",cmd:"2. Normalform (2NF)",cat:"nrm",catLabel:"NORMALISERING",
+desc:"1NF + ingen delvis avhengighet — alle ikke-nøkkelkolonner avhenger av HELE primærnøkkelen.",
+tags:["2nf","andre normalform","delvis avhengighet","sammensatt pk","split"],
+difficulty:"intermediate",related:["nrm-1nf","nrm-3nf"],
+theory:"<h4>2NF — Krav:</h4><p>Tabellen er i <strong>1NF</strong>, OG alle ikke-nøkkelkolonner avhenger av <strong>HELE primærnøkkelen</strong> — ikke bare en del av den.</p><div class='fm'>2NF gjelder KUN for tabeller med sammensatt primærnøkkel</div><h4>Eksempel — delvis avhengighet:</h4><p>PK = (bestilling_id, produkt_id). Kolonnen <em>produkt_navn</em> avhenger kun av <em>produkt_id</em>, IKKE begge. Brudd!</p><table><tr><th>Kolonne</th><th>Avhenger av</th><th>2NF?</th></tr><tr><td>antall</td><td>(bestilling_id, produkt_id)</td><td>✅ Hele PK</td></tr><tr><td>produkt_navn</td><td>produkt_id (delvis!)</td><td>❌ Brudd</td></tr><tr><td>kundnavn</td><td>bestilling_id (delvis!)</td><td>❌ Brudd</td></tr></table>",
+pitfalls:["2NF gjelder KUN sammensatt PK.","Tabeller med enkelt-kolonne PK er automatisk i 2NF."],
+when:["Etter 1NF, sjekk sammensatte primærnøkler","Identifiser delvise avhengigheter"],
+steps:[
+{s:"Verifiser at tabellen er i 1NF"},
+{s:"Identifiser alle sammensatte primærnøkler"},
+{s:"For hver ikke-nøkkelkolonne: avhenger den av HELE PK eller bare en del?"},
+{s:"Flytt kolonner med delvis avhengighet til en ny tabell"},
+{s:"Legg til fremmednøkkel tilbake"}
+],
+examples:[
+{label:"1 · FØR 2NF: delvis avhengighet",code:"-- ❌ BRYTER 2NF (PK = bestilling_id, produkt_id)\nCREATE TABLE bestilling_detaljer_dårlig (\n  bestilling_id INT,\n  produkt_id    INT,\n  antall        INT,           -- ✅ avhenger av begge\n  produkt_navn  VARCHAR(100),  -- ❌ kun produkt_id\n  produkt_pris  DECIMAL(10,2), -- ❌ kun produkt_id\n  kunde_navn    VARCHAR(100),  -- ❌ kun bestilling_id\n  PRIMARY KEY (bestilling_id, produkt_id)\n);"},
+{label:"2 · ETTER 2NF: split tabeller",code:"-- ✅ 2NF\nCREATE TABLE produkter (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  pris DECIMAL(10,2)\n);\nCREATE TABLE bestillinger (\n  id         INT AUTO_INCREMENT PRIMARY KEY,\n  kunde_navn VARCHAR(100),\n  dato       DATE\n);\nCREATE TABLE bestilling_detaljer (\n  bestilling_id INT,\n  produkt_id    INT,\n  antall        INT,\n  PRIMARY KEY (bestilling_id, produkt_id),\n  FOREIGN KEY (bestilling_id) REFERENCES bestillinger(id),\n  FOREIGN KEY (produkt_id)    REFERENCES produkter(id)\n);"},
+{label:"3 · Karakter-eksempel FØR",code:"-- ❌ BRYTER 2NF\nCREATE TABLE karakterer_dårlig (\n  student_id   INT,\n  kurs_id      INT,\n  karakter     CHAR(1),       -- ✅ avhenger av begge\n  student_navn VARCHAR(100),  -- ❌ kun student_id\n  kurs_navn    VARCHAR(100),  -- ❌ kun kurs_id\n  kurs_poeng   INT,           -- ❌ kun kurs_id\n  PRIMARY KEY (student_id, kurs_id)\n);"},
+{label:"4 · Karakter-eksempel ETTER 2NF",code:"-- ✅ 2NF\nCREATE TABLE studenter (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100)\n);\nCREATE TABLE kurs (\n  id    INT AUTO_INCREMENT PRIMARY KEY,\n  navn  VARCHAR(100),\n  poeng INT\n);\nCREATE TABLE karakterer (\n  student_id INT,\n  kurs_id    INT,\n  karakter   CHAR(1),\n  PRIMARY KEY (student_id, kurs_id),\n  FOREIGN KEY (student_id) REFERENCES studenter(id),\n  FOREIGN KEY (kurs_id)    REFERENCES kurs(id)\n);"},
+{label:"5 · Test for 2NF-brudd",code:"-- Spørsmål: Kan to rader ha ULIK verdi i kolonnen\n-- mens kun ÉN del av PK er lik?\n\n-- Eks: PK=(bestilling_id, produkt_id), kolonne=produkt_navn\n-- Kan produkt_navn variere mens produkt_id er lik?\nSELECT produkt_id, COUNT(DISTINCT produkt_navn) AS ulike\nFROM bestilling_detaljer\nGROUP BY produkt_id\nHAVING ulike > 1;\n-- Returnerer rader → 2NF-brudd"},
+{label:"6 · Lager-eksempel FØR",code:"-- ❌ BRYTER 2NF (PK = lager_id, produkt_id)\nCREATE TABLE lager_dårlig (\n  lager_id      INT,\n  produkt_id    INT,\n  antall        INT,           -- ✅ avhenger av begge\n  lager_navn    VARCHAR(100), -- ❌ kun lager_id\n  lager_adresse VARCHAR(200), -- ❌ kun lager_id\n  produkt_navn  VARCHAR(100), -- ❌ kun produkt_id\n  vekt_kg       DECIMAL(5,2), -- ❌ kun produkt_id\n  PRIMARY KEY (lager_id, produkt_id)\n);"},
+{label:"7 · Lager ETTER 2NF",code:"CREATE TABLE lagre (\n  id      INT PRIMARY KEY,\n  navn    VARCHAR(100),\n  adresse VARCHAR(200)\n);\nCREATE TABLE produkter (\n  id   INT PRIMARY KEY,\n  navn VARCHAR(100),\n  vekt DECIMAL(5,2)\n);\nCREATE TABLE lager_beholdning (\n  lager_id   INT,\n  produkt_id INT,\n  antall     INT NOT NULL DEFAULT 0,\n  PRIMARY KEY (lager_id, produkt_id),\n  FOREIGN KEY (lager_id)   REFERENCES lagre(id),\n  FOREIGN KEY (produkt_id) REFERENCES produkter(id)\n);"},
+{label:"8 · Enkel PK = automatisk 2NF",code:"-- ✅ Enkel PK → ingen delvis avhengighet mulig\nCREATE TABLE ansatte (\n  id       INT AUTO_INCREMENT PRIMARY KEY,  -- enkel PK\n  navn     VARCHAR(100),\n  avd_id   INT,\n  avd_navn VARCHAR(100),\n  -- avd_navn er ikke 2NF-brudd, men 3NF-brudd!\n  FOREIGN KEY (avd_id) REFERENCES avdelinger(id)\n);"},
+{label:"9 · Spørring for å finne 2NF-brudd",code:"-- Sjekk konsistens: samme produkt_id → alltid samme produkt_navn?\nSELECT produkt_id, COUNT(DISTINCT produkt_navn) AS ulike\nFROM bestilling_detaljer\nGROUP BY produkt_id HAVING ulike > 1;\n-- Resultat: ikke-tomme rader = 2NF-brudd"},
+{label:"10 · Oppsummering 1NF → 2NF",code:"-- Prosessen:\n-- 1. Start: stor tabell med sammensatt PK\n-- 2. For hver kolonne: hvem avhenger den av?\n-- 3. Avhenger av del A → flytt til tabell A\n-- 4. Avhenger av del B → flytt til tabell B\n-- 5. Avhenger av BEGGE → behold i opprinnelig tabell\n\n-- Sjekk: ingen 2NF-brudd igjen\nSELECT 'OK' WHERE (\n  SELECT COUNT(*) FROM bestilling_detaljer\n  GROUP BY produkt_id HAVING COUNT(DISTINCT produkt_navn) > 1\n) = 0;"}
+]},
+{id:"nrm-3nf",cmd:"3. Normalform (3NF)",cat:"nrm",catLabel:"NORMALISERING",
+desc:"2NF + ingen transitive avhengigheter — alle ikke-nøkkelkolonner avhenger DIREKTE av PK.",
+tags:["3nf","tredje normalform","transitiv","direkte","dekomponer"],
+difficulty:"intermediate",related:["nrm-2nf","nrm-1nf"],
+theory:"<h4>3NF — Krav:</h4><p>Tabellen er i <strong>2NF</strong>, OG ingen ikke-nøkkelkolonne avhenger av en <strong>annen ikke-nøkkelkolonne</strong>.</p><h4>Transitiv avhengighet:</h4><div class='fm'>PK → A → B  ←  B er transitivt avhengig av PK via A</div><p>Eksempel: <code>ansatt_id → avd_id → avd_sjef</code></p><p><em>avd_sjef</em> avhenger av <em>avd_id</em> (ikke direkte av <em>ansatt_id</em>). Brudd!</p><h4>3NF-test:</h4><table><tr><th>Avhengighet</th><th>3NF?</th></tr><tr><td>ansatt_id → lønn</td><td>✅ Direkte</td></tr><tr><td>ansatt_id → avd_id → avd_sjef</td><td>❌ Transitiv</td></tr><tr><td>postnr → by (i kunder-tab)</td><td>❌ Transitiv</td></tr></table>",
+pitfalls:["Klassisk eksempel: postnr→by, land_kode→land_navn.","Etter 3NF får du flere JOINs — test ytelse."],
+when:["Etter 2NF, sjekk transitive avhengigheter","Spesielt på kode→navn-par"],
+steps:[
+{s:"Verifiser at tabellen er i 2NF"},
+{s:"For hver ikke-nøkkelkolonne: avhenger den av en ANNEN ikke-nøkkelkolonne?"},
+{s:"Identifiser alle transitive avhengigheter: PK → A → B"},
+{s:"Flytt B (og A) til en ny tabell med A som PK"},
+{s:"Behold kun A (fremmednøkkelen) i opprinnelig tabell"}
+],
+examples:[
+{label:"1 · FØR 3NF: transitiv",code:"-- ❌ BRYTER 3NF\n-- ansatt_id → avd_id → avd_sjef (transitiv!)\nCREATE TABLE ansatte_dårlig (\n  id       INT AUTO_INCREMENT PRIMARY KEY,\n  navn     VARCHAR(100),\n  lønn     DECIMAL(10,2),\n  avd_id   INT,\n  avd_sjef VARCHAR(100)  -- ← transitiv via avd_id\n);"},
+{label:"2 · ETTER 3NF: split avd-info",code:"-- ✅ 3NF\nCREATE TABLE avdelinger (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  sjef VARCHAR(100)         -- hører til avdelingen\n);\nCREATE TABLE ansatte (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  lønn   DECIMAL(10,2),\n  avd_id INT,\n  FOREIGN KEY (avd_id) REFERENCES avdelinger(id)\n);"},
+{label:"3 · FØR 3NF: postnr → by",code:"-- ❌ BRYTER 3NF\n-- kunde_id → postnr → by, fylke (transitiv!)\nCREATE TABLE kunder_dårlig (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  by     VARCHAR(100),  -- ← transitiv via postnr\n  fylke  VARCHAR(100)   -- ← transitiv via postnr\n);"},
+{label:"4 · ETTER 3NF: postnr-tabell",code:"-- ✅ 3NF\nCREATE TABLE postnummer (\n  postnr CHAR(4) PRIMARY KEY,\n  by     VARCHAR(100),\n  fylke  VARCHAR(100)\n);\nCREATE TABLE kunder (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  FOREIGN KEY (postnr) REFERENCES postnummer(postnr)\n);\nSELECT k.navn, k.gate, p.by, p.fylke\nFROM kunder k JOIN postnummer p ON k.postnr = p.postnr;"},
+{label:"5 · FØR 3NF: produkt-kategori",code:"-- ❌ BRYTER 3NF\n-- produkt_id → kategori_id → kategori_navn (transitiv)\nCREATE TABLE produkter_dårlig (\n  id            INT PRIMARY KEY,\n  navn          VARCHAR(200),\n  pris          DECIMAL(10,2),\n  kategori_id   INT,\n  kategori_navn VARCHAR(100),  -- ← transitiv\n  kategori_ikon VARCHAR(50)    -- ← transitiv\n);"},
+{label:"6 · ETTER 3NF: kategori-tabell",code:"CREATE TABLE kategorier (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  ikon VARCHAR(50)\n);\nCREATE TABLE produkter (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  navn        VARCHAR(200),\n  pris        DECIMAL(10,2),\n  kategori_id INT,\n  FOREIGN KEY (kategori_id) REFERENCES kategorier(id)\n);"},
+{label:"7 · Test for 3NF-brudd",code:"-- Sjekk: er avd_sjef konsistent per avd_id?\nSELECT avd_id, COUNT(DISTINCT avd_sjef) AS ulike\nFROM ansatte_dårlig\nGROUP BY avd_id HAVING ulike > 1;\n-- Resultat → inkonsistens (update-anomali)"},
+{label:"8 · Oppsummering 1NF → 2NF → 3NF",code:"-- 1NF: Atomiske verdier, ingen gjentagende grupper, PK\n--   FIX: Split ikke-atomiske kolonner\n\n-- 2NF: Ingen delvis avhengighet (kun for sammensatt PK)\n--   FIX: Kolonner avhengige av del av PK → egne tabeller\n\n-- 3NF: Ingen transitiv avhengighet\n--   FIX: Kode→Navn-par (avd_id→avd_navn) → egne tabeller\n\n-- Sjekk-spørsmål:\n-- 1NF: Er alle verdier atomiske?\n-- 2NF: Avhenger alt av HELE PK?\n-- 3NF: Avhenger alt DIREKTE av PK?"},
+{label:"9 · Komplett 1NF→2NF→3NF",code:"-- OPPRINNELIG (unormalisert):\n-- ordrer(ordreID, prodID, prodNavn, kategori, antall,\n--        kundeID, kundeNavn, postNr, by)\n\n-- 1NF (atomisk, PK definert): PK=(ordreID, prodID)\n\n-- 2NF (fjern delvise avhengigheter):\n-- produkter(prodID, prodNavn, kategori)\n-- ordrer(ordreID, kundeID, dato)\n-- ordre_linjer(ordreID, prodID, antall)\n\n-- 3NF (fjern transitive avhengigheter):\n-- postnummer(postNr, by)\n-- kunder(kundeID, kundeNavn, postNr)\n-- kategorier(kategoriID, navn)\n-- produkter(prodID, prodNavn, kategoriID)\n-- ordrer(ordreID, kundeID, dato)\n-- ordre_linjer(ordreID, prodID, antall)"},
+{label:"10 · Spørring på ferdig 3NF",code:"SELECT\n  o.id     AS ordre_id,\n  k.navn   AS kunde,\n  p.by,\n  pr.navn  AS produkt,\n  kat.navn AS kategori,\n  ol.antall, ol.antall*pr.pris AS linje_total\nFROM ordrer o\nJOIN kunder k    ON k.id = o.kunde_id\nJOIN postnummer p ON p.postnr = k.postnr\nJOIN ordre_linjer ol ON ol.ordre_id = o.id\nJOIN produkter pr   ON pr.id = ol.produkt_id\nJOIN kategorier kat ON kat.id = pr.kategori_id\nORDER BY o.id, pr.navn;"}
+]},
+
+{id:"er-nettbutikk",cmd:"ER-modell: Nettbutikk",cat:"er",catLabel:"ER-MODELL",
+desc:"Normaliser en ustrukturert nettbutikk-database fra 0NF til 3NF steg for steg.",
+tags:["er","nettbutikk","ecommerce","ordre","kunde","produkt","normalisering"],
+difficulty:"intermediate",related:["nrm-1nf","nrm-2nf","nrm-3nf","create-table"],
+steps:[
+{s:"<strong>Steg 0 (0NF)</strong> — Identifiser problemer i flat struktur"},
+{s:"<strong>Steg 1 (1NF)</strong> — Fjern gjentagende grupper (produkt1, produkt2…)"},
+{s:"<strong>Steg 2 (2NF)</strong> — Skill produkt-info og kunde-info fra ordre-info"},
+{s:"<strong>Steg 3 (3NF)</strong> — Fjern transitive avhengigheter (postnr→by, kategori_id→navn)"},
+{s:"<strong>Verifiser</strong> — Skriv komplett spørring via JOINs"}
+],
+examples:[
+{label:"Steg 0 · Unormalisert (0NF)",code:"-- 0NF: alt i én tabell — masse problemer\nCREATE TABLE alt_i_en (\n  ordre_id      INT,\n  dato          DATE,\n  kunde_navn    VARCHAR(100),\n  kunde_epost   VARCHAR(200),\n  gate          VARCHAR(200),\n  postnr        CHAR(4),\n  by            VARCHAR(100),  -- transitiv via postnr\n  produkt1_navn VARCHAR(100),  -- gjentagende!\n  produkt1_pris DECIMAL(10,2),\n  produkt1_kat  VARCHAR(50),\n  antall1       INT,\n  produkt2_navn VARCHAR(100),  -- gjentagende!\n  produkt2_pris DECIMAL(10,2),\n  produkt2_kat  VARCHAR(50),\n  antall2       INT\n);"},
+{label:"Steg 1 · Etter 1NF",code:"-- 1NF: én rad per produkt per ordre\nCREATE TABLE ordre_linjer_1nf (\n  ordre_id     INT,\n  dato         DATE,\n  kunde_navn   VARCHAR(100),  -- redundant (2NF-brudd)\n  kunde_epost  VARCHAR(200),\n  gate         VARCHAR(200),\n  postnr       CHAR(4),\n  by           VARCHAR(100),\n  produkt_navn VARCHAR(100),\n  produkt_pris DECIMAL(10,2),\n  produkt_kat  VARCHAR(50),\n  antall       INT,\n  PRIMARY KEY (ordre_id, produkt_navn)\n);"},
+{label:"Steg 2 · Etter 2NF",code:"-- 2NF: skill produkt og kunde fra ordrelinje\nCREATE TABLE kunder_2nf (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  epost  VARCHAR(200) UNIQUE,\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  by     VARCHAR(100)  -- transitiv (3NF-brudd)\n);\nCREATE TABLE produkter_2nf (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  pris DECIMAL(10,2),\n  kat  VARCHAR(50)  -- transitiv (3NF-brudd)\n);\nCREATE TABLE ordrer_2nf (\n  id        INT AUTO_INCREMENT PRIMARY KEY,\n  kunde_id  INT,\n  dato      DATE,\n  FOREIGN KEY (kunde_id) REFERENCES kunder_2nf(id)\n);\nCREATE TABLE ordre_linjer_2nf (\n  ordre_id   INT,\n  produkt_id INT,\n  antall     INT,\n  PRIMARY KEY (ordre_id, produkt_id),\n  FOREIGN KEY (ordre_id)   REFERENCES ordrer_2nf(id),\n  FOREIGN KEY (produkt_id) REFERENCES produkter_2nf(id)\n);"},
+{label:"Steg 3 · Etter 3NF (ferdig)",code:"-- 3NF: postnr→by og kategori_id→navn er nå i egne tabeller\nCREATE TABLE postnummer (\n  postnr CHAR(4) PRIMARY KEY,\n  by     VARCHAR(100),\n  fylke  VARCHAR(100)\n);\nCREATE TABLE kategorier (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100)\n);\nCREATE TABLE kunder (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100) NOT NULL,\n  epost  VARCHAR(200) UNIQUE NOT NULL,\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  FOREIGN KEY (postnr) REFERENCES postnummer(postnr)\n);\nCREATE TABLE produkter (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  navn        VARCHAR(200) NOT NULL,\n  pris        DECIMAL(10,2) NOT NULL CHECK(pris >= 0),\n  kategori_id INT,\n  FOREIGN KEY (kategori_id) REFERENCES kategorier(id)\n);\nCREATE TABLE ordrer (\n  id         INT AUTO_INCREMENT PRIMARY KEY,\n  kunde_id   INT NOT NULL,\n  dato       DATETIME DEFAULT CURRENT_TIMESTAMP,\n  status     ENUM('Ny','Sendt','Levert') DEFAULT 'Ny',\n  FOREIGN KEY (kunde_id) REFERENCES kunder(id)\n);\nCREATE TABLE ordre_linjer (\n  ordre_id   INT NOT NULL,\n  produkt_id INT NOT NULL,\n  antall     INT NOT NULL CHECK(antall > 0),\n  enhetspris DECIMAL(10,2) NOT NULL,\n  PRIMARY KEY (ordre_id, produkt_id),\n  FOREIGN KEY (ordre_id)   REFERENCES ordrer(id) ON DELETE CASCADE,\n  FOREIGN KEY (produkt_id) REFERENCES produkter(id)\n);"},
+{label:"Steg 4 · Spørring på 3NF",code:"SELECT\n  o.id      AS ordre_id,\n  k.navn    AS kunde,\n  k.epost,\n  pn.by, pn.fylke,\n  pr.navn   AS produkt,\n  kat.navn  AS kategori,\n  ol.antall, ol.enhetspris,\n  ol.antall * ol.enhetspris AS linje_total\nFROM ordrer o\nJOIN kunder k        ON k.id = o.kunde_id\nJOIN postnummer pn   ON pn.postnr = k.postnr\nJOIN ordre_linjer ol ON ol.ordre_id = o.id\nJOIN produkter pr    ON pr.id = ol.produkt_id\nJOIN kategorier kat  ON kat.id = pr.kategori_id\nORDER BY o.id, pr.navn;"},
+{label:"Steg 5 · Aggregert salgsrapport",code:"SELECT\n  kat.navn AS kategori,\n  COUNT(DISTINCT ol.ordre_id) AS ant_ordrer,\n  SUM(ol.antall) AS totalt_solgt,\n  SUM(ol.antall * ol.enhetspris) AS total_omsetning\nFROM ordre_linjer ol\nJOIN produkter pr   ON pr.id = ol.produkt_id\nJOIN kategorier kat ON kat.id = pr.kategori_id\nGROUP BY kat.id, kat.navn\nORDER BY total_omsetning DESC;"}
+]},
+{id:"er-skole",cmd:"ER-modell: Skole / Universitet",cat:"er",catLabel:"ER-MODELL",
+desc:"Normaliser en skoledatabase med elever, kurs, lærere og karakterer fra 0NF til 3NF.",
+tags:["er","skole","universitet","elev","kurs","lærer","karakter","timeplan"],
+difficulty:"intermediate",related:["nrm-1nf","nrm-2nf","nrm-3nf"],
+steps:[
+{s:"<strong>0NF</strong> — Identifiser gjentagende grupper og redundans"},
+{s:"<strong>1NF</strong> — Én rad per elev per kurs (fjern kurs1, kurs2, kurs3)"},
+{s:"<strong>2NF</strong> — Skill elev-info, kurs-info og karakter-info"},
+{s:"<strong>3NF</strong> — Fjern transitive avhengigheter (lærer-avdeling)"},
+{s:"<strong>Resultat</strong> — Ferdig 3NF-schema med alle relasjoner"}
+],
+examples:[
+{label:"Steg 0 · Unormalisert",code:"-- 0NF: alt i én tabell\n-- student_id, navn, epost, fødsel,\n-- kurs1_navn, kurs1_poeng, kurs1_lærer, kurs1_karakter,\n-- kurs2_navn, kurs2_poeng, kurs2_lærer, kurs2_karakter,\n-- kurs3_navn, kurs3_poeng, kurs3_lærer, kurs3_karakter\n-- Problemer:\n-- Gjentagende kolonner (kurs1, kurs2, kurs3...)\n-- Maks 3 kurs (skalerbart?)\n-- Kursinfo gjentas for HVER student"},
+{label:"Steg 1 · Etter 1NF",code:"-- 1NF: én rad per student per kurs\nCREATE TABLE karakterer_1nf (\n  student_id    INT,\n  student_navn  VARCHAR(100),\n  student_epost VARCHAR(200),\n  kurs_id       INT,\n  kurs_navn     VARCHAR(100),  -- redundant\n  kurs_poeng    INT,           -- redundant\n  lærer_navn    VARCHAR(100),  -- redundant\n  karakter      CHAR(2),\n  PRIMARY KEY (student_id, kurs_id)\n);"},
+{label:"Steg 2 · Etter 2NF",code:"-- 2NF: skill tabeller\nCREATE TABLE studenter_2nf (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  epost  VARCHAR(200) UNIQUE,\n  fødsel DATE\n);\nCREATE TABLE lærere_2nf (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  avd  VARCHAR(100)  -- transitiv (3NF-brudd)\n);\nCREATE TABLE kurs_2nf (\n  id       INT AUTO_INCREMENT PRIMARY KEY,\n  navn     VARCHAR(200),\n  poeng    INT,\n  lærer_id INT,\n  FOREIGN KEY (lærer_id) REFERENCES lærere_2nf(id)\n);\nCREATE TABLE karakterer_2nf (\n  student_id INT,\n  kurs_id    INT,\n  karakter   CHAR(2),\n  dato       DATE,\n  PRIMARY KEY (student_id, kurs_id),\n  FOREIGN KEY (student_id) REFERENCES studenter_2nf(id),\n  FOREIGN KEY (kurs_id)    REFERENCES kurs_2nf(id)\n);"},
+{label:"Steg 3 · Etter 3NF (ferdig)",code:"-- 3NF: avdeling i egen tabell\nCREATE TABLE avdelinger (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  kode CHAR(5) UNIQUE\n);\nCREATE TABLE lærere (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100) NOT NULL,\n  epost  VARCHAR(200) UNIQUE,\n  avd_id INT,\n  FOREIGN KEY (avd_id) REFERENCES avdelinger(id)\n);\nCREATE TABLE studenter (\n  id       INT AUTO_INCREMENT PRIMARY KEY,\n  navn     VARCHAR(100) NOT NULL,\n  epost    VARCHAR(200) UNIQUE NOT NULL,\n  fødsel   DATE,\n  start_år YEAR\n);\nCREATE TABLE kurs (\n  id       INT AUTO_INCREMENT PRIMARY KEY,\n  kode     VARCHAR(20) UNIQUE,\n  navn     VARCHAR(200),\n  poeng    INT CHECK(poeng > 0),\n  avd_id   INT,\n  lærer_id INT,\n  FOREIGN KEY (avd_id)   REFERENCES avdelinger(id),\n  FOREIGN KEY (lærer_id) REFERENCES lærere(id)\n);\nCREATE TABLE karakterer (\n  student_id INT,\n  kurs_id    INT,\n  karakter   ENUM('A','B','C','D','E','F'),\n  dato       DATE,\n  PRIMARY KEY (student_id, kurs_id),\n  FOREIGN KEY (student_id) REFERENCES studenter(id),\n  FOREIGN KEY (kurs_id)    REFERENCES kurs(id)\n);"},
+{label:"Steg 4 · Karakteroversikt",code:"SELECT\n  s.navn AS student,\n  k.kode, k.navn AS kurs, k.poeng,\n  l.navn AS lærer, a.navn AS avdeling,\n  ka.karakter, ka.dato\nFROM karakterer ka\nJOIN studenter s  ON s.id = ka.student_id\nJOIN kurs k       ON k.id = ka.kurs_id\nJOIN lærere l     ON l.id = k.lærer_id\nJOIN avdelinger a ON a.id = k.avd_id\nWHERE s.epost = 'student@uni.no'\nORDER BY ka.dato DESC;"},
+{label:"Steg 5 · Snittkarakter per kurs",code:"SELECT k.kode, k.navn,\n  COUNT(*) AS studenter,\n  -- A=5, B=4, C=3, D=2, E=1, F=0\n  ROUND(AVG(CASE ka.karakter\n    WHEN 'A' THEN 5 WHEN 'B' THEN 4 WHEN 'C' THEN 3\n    WHEN 'D' THEN 2 WHEN 'E' THEN 1 ELSE 0 END), 2) AS snitt_poeng\nFROM karakterer ka\nJOIN kurs k ON k.id = ka.kurs_id\nGROUP BY k.id, k.kode, k.navn\nORDER BY snitt_poeng DESC;"}
+]},
+{id:"er-sykehus",cmd:"ER-modell: Sykehus",cat:"er",catLabel:"ER-MODELL",
+desc:"Normaliser en sykehus-database med pasienter, leger, avdelinger og konsultasjoner.",
+tags:["er","sykehus","pasient","lege","avdeling","konsultasjon","diagnose","journal"],
+difficulty:"advanced",related:["nrm-1nf","nrm-2nf","nrm-3nf"],
+steps:[
+{s:"<strong>0NF</strong> — Flat struktur med alle problemer"},
+{s:"<strong>1NF</strong> — Fjern gjentagende grupper (diagnose1, diagnose2, medisin1...)"},
+{s:"<strong>2NF</strong> — Skill pasient, lege, konsultasjon, diagnose"},
+{s:"<strong>3NF</strong> — Fjern transitive avhengigheter (avd_adresse, ICD→navn)"},
+{s:"<strong>Ferdig schema</strong> — Full normalisering for journalsystem"}
+],
+examples:[
+{label:"Steg 0 · Unormalisert",code:"-- 0NF: alt i én tabell\n-- konsultasjon_id, dato, pasient_navn, pasient_fnr, pasient_tlf,\n-- pasient_adresse, pasient_by, pasient_postnr,\n-- lege_navn, lege_avd, avd_etasje, avd_tlf,\n-- diagnose1_icd, diagnose1_navn, diagnose1_alvorlighet,\n-- diagnose2_icd, diagnose2_navn, diagnose2_alvorlighet,\n-- medisin1, dose1, medisin2, dose2\n-- Problemer:\n-- Gjentagende grupper (diagnose1, diagnose2, medisin1, medisin2)\n-- Pasient- og lege-info gjentas per konsultasjon"},
+{label:"Steg 1 · Etter 1NF",code:"-- 1NF: én rad per konsultasjon per diagnose\nCREATE TABLE konsultasjon_diagnose_1nf (\n  konsult_id    INT,\n  pasient_fnr   VARCHAR(20),\n  pasient_navn  VARCHAR(100),\n  lege_navn     VARCHAR(100),\n  dato          DATE,\n  icd_kode      VARCHAR(10),\n  diagnose_navn VARCHAR(200),\n  alvorlighet   TINYINT,\n  PRIMARY KEY (konsult_id, icd_kode)\n);"},
+{label:"Steg 2 · Etter 2NF",code:"-- 2NF: skill alle entiteter\nCREATE TABLE pasienter_2nf (\n  fnr    VARCHAR(20) PRIMARY KEY,\n  navn   VARCHAR(100),\n  tlf    VARCHAR(20),\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  by     VARCHAR(100)  -- transitiv (3NF-brudd)\n);\nCREATE TABLE avdelinger_2nf (\n  id     INT PRIMARY KEY,\n  navn   VARCHAR(100),\n  etasje INT,\n  tlf    VARCHAR(20)\n);\nCREATE TABLE leger_2nf (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  avd_id INT,\n  FOREIGN KEY (avd_id) REFERENCES avdelinger_2nf(id)\n);\nCREATE TABLE diagnoser_2nf (\n  icd_kode VARCHAR(10) PRIMARY KEY,\n  navn     VARCHAR(200),  -- transitiv (3NF: ICD→navn)\n  kategori VARCHAR(100)\n);"},
+{label:"Steg 3 · Etter 3NF (ferdig)",code:"-- 3NF: postnr og ICD-kategori i egne tabeller\nCREATE TABLE postnummer (\n  postnr CHAR(4) PRIMARY KEY,\n  by     VARCHAR(100),\n  fylke  VARCHAR(100)\n);\nCREATE TABLE icd_kategorier (\n  kode VARCHAR(5) PRIMARY KEY,\n  navn VARCHAR(100)\n);\nCREATE TABLE diagnoser (\n  icd_kode      VARCHAR(10) PRIMARY KEY,\n  navn          VARCHAR(200),\n  kategori_kode VARCHAR(5),\n  FOREIGN KEY (kategori_kode) REFERENCES icd_kategorier(kode)\n);\nCREATE TABLE avdelinger (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100) NOT NULL,\n  etasje INT,\n  tlf    VARCHAR(20)\n);\nCREATE TABLE pasienter (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  fnr    VARCHAR(20) UNIQUE NOT NULL,\n  navn   VARCHAR(100) NOT NULL,\n  fødsel DATE,\n  tlf    VARCHAR(20),\n  gate   VARCHAR(200),\n  postnr CHAR(4),\n  FOREIGN KEY (postnr) REFERENCES postnummer(postnr)\n);\nCREATE TABLE leger (\n  id           INT AUTO_INCREMENT PRIMARY KEY,\n  navn         VARCHAR(100) NOT NULL,\n  epost        VARCHAR(200) UNIQUE,\n  autorisasjon VARCHAR(20) UNIQUE,\n  avd_id       INT,\n  FOREIGN KEY (avd_id) REFERENCES avdelinger(id)\n);\nCREATE TABLE konsultasjoner (\n  id         INT AUTO_INCREMENT PRIMARY KEY,\n  pasient_id INT NOT NULL,\n  lege_id    INT NOT NULL,\n  dato       DATETIME NOT NULL,\n  notater    TEXT,\n  FOREIGN KEY (pasient_id) REFERENCES pasienter(id),\n  FOREIGN KEY (lege_id)    REFERENCES leger(id)\n);\nCREATE TABLE konsultasjon_diagnoser (\n  konsultasjon_id INT,\n  icd_kode        VARCHAR(10),\n  alvorlighet     ENUM('Mild','Moderat','Alvorlig'),\n  PRIMARY KEY (konsultasjon_id, icd_kode),\n  FOREIGN KEY (konsultasjon_id) REFERENCES konsultasjoner(id),\n  FOREIGN KEY (icd_kode)        REFERENCES diagnoser(icd_kode)\n);\nCREATE TABLE medisiner (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100),\n  atc  VARCHAR(20) UNIQUE\n);\nCREATE TABLE resepter (\n  id              INT AUTO_INCREMENT PRIMARY KEY,\n  konsultasjon_id INT,\n  medisin_id      INT,\n  dose            VARCHAR(100),\n  varighet_dager  INT,\n  FOREIGN KEY (konsultasjon_id) REFERENCES konsultasjoner(id),\n  FOREIGN KEY (medisin_id)      REFERENCES medisiner(id)\n);"},
+{label:"Steg 4 · Pasienthistorikk",code:"SELECT\n  p.navn AS pasient, p.fnr,\n  k.dato AS konsultasjonsdato,\n  l.navn AS lege, a.navn AS avdeling,\n  d.icd_kode, d.navn AS diagnose, kd.alvorlighet\nFROM konsultasjoner k\nJOIN pasienter p              ON p.id = k.pasient_id\nJOIN leger l                  ON l.id = k.lege_id\nJOIN avdelinger a             ON a.id = l.avd_id\nLEFT JOIN konsultasjon_diagnoser kd ON kd.konsultasjon_id = k.id\nLEFT JOIN diagnoser d         ON d.icd_kode = kd.icd_kode\nWHERE p.fnr = '12345678901'\nORDER BY k.dato DESC;"},
+{label:"Steg 5 · Statistikk per avdeling",code:"SELECT\n  a.navn AS avdeling,\n  COUNT(DISTINCT k.id)         AS ant_konsultasjoner,\n  COUNT(DISTINCT k.pasient_id) AS unike_pasienter,\n  COUNT(DISTINCT l.id)         AS aktive_leger\nFROM avdelinger a\nJOIN leger l           ON l.avd_id = a.id\nJOIN konsultasjoner k  ON k.lege_id = l.id\nWHERE k.dato >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)\nGROUP BY a.id, a.navn\nORDER BY ant_konsultasjoner DESC;"}
+]},
+{id:"er-bibliotek",cmd:"ER-modell: Bibliotek",cat:"er",catLabel:"ER-MODELL",
+desc:"Normaliser et biblioteksystem med bøker, lånere, forfattere og utlån.",
+tags:["er","bibliotek","bok","forfatter","utlån","låner","reservasjon"],
+difficulty:"intermediate",related:["nrm-1nf","nrm-2nf","nrm-3nf"],
+steps:[
+{s:"<strong>0NF</strong> — Flat tabell med flere forfattere per bok"},
+{s:"<strong>1NF</strong> — Fjern gjentagende forfatter-kolonner"},
+{s:"<strong>2NF</strong> — Skill bok-info fra utlåns-info"},
+{s:"<strong>3NF</strong> — Fjern transitive avhengigheter (forlag-info, sjanger)"},
+{s:"<strong>Bibliotek schema</strong> — Mange-til-mange forfatter↔bok"}
+],
+examples:[
+{label:"Steg 0 · Unormalisert",code:"-- 0NF: alt i én tabell\n-- utlån_id, dato, returdato,\n-- låner_navn, låner_epost, låner_kommune, kommune_kode,\n-- bok_isbn, bok_tittel, bok_sjanger,\n-- forfatter1_navn, forfatter1_født,\n-- forfatter2_navn, forfatter2_født,\n-- forlag_navn, forlag_by, forlag_land\n-- Problemer:\n-- Gjentagende forfatter-kolonner\n-- Forlag-info gjentas for hver utlån"},
+{label:"Steg 1 · Etter 1NF",code:"-- 1NF: én rad per utlån per forfatter\nCREATE TABLE utlån_1nf (\n  utlån_id        INT,\n  dato            DATE,\n  returdato       DATE,\n  låner_navn      VARCHAR(100),\n  låner_epost     VARCHAR(200),\n  bok_isbn        VARCHAR(13),\n  bok_tittel      VARCHAR(300),\n  forfatter_navn  VARCHAR(200),\n  forfatter_født  YEAR,\n  forlag_navn     VARCHAR(100),\n  PRIMARY KEY (utlån_id, forfatter_navn)\n);"},
+{label:"Steg 2 · Etter 2NF",code:"-- 2NF: skill ut entitetene\nCREATE TABLE lånere_2nf (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100),\n  epost  VARCHAR(200) UNIQUE\n);\nCREATE TABLE forfattere_2nf (\n  id    INT AUTO_INCREMENT PRIMARY KEY,\n  navn  VARCHAR(200),\n  født  YEAR\n);\nCREATE TABLE bøker_2nf (\n  isbn        VARCHAR(13) PRIMARY KEY,\n  tittel      VARCHAR(300),\n  sjanger     VARCHAR(100),\n  forlag_navn VARCHAR(100)  -- transitiv (3NF-brudd)\n);\nCREATE TABLE bok_forfattere_2nf (\n  isbn         VARCHAR(13),\n  forfatter_id INT,\n  PRIMARY KEY (isbn, forfatter_id),\n  FOREIGN KEY (isbn)         REFERENCES bøker_2nf(isbn),\n  FOREIGN KEY (forfatter_id) REFERENCES forfattere_2nf(id)\n);\nCREATE TABLE utlån_2nf (\n  id        INT AUTO_INCREMENT PRIMARY KEY,\n  låner_id  INT,\n  isbn      VARCHAR(13),\n  dato      DATE,\n  returdato DATE,\n  FOREIGN KEY (låner_id) REFERENCES lånere_2nf(id),\n  FOREIGN KEY (isbn)     REFERENCES bøker_2nf(isbn)\n);"},
+{label:"Steg 3 · Etter 3NF (ferdig)",code:"-- 3NF: forlag og sjanger i egne tabeller\nCREATE TABLE forlag (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100) NOT NULL,\n  by   VARCHAR(100),\n  land VARCHAR(100) DEFAULT 'Norge'\n);\nCREATE TABLE sjangere (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  navn VARCHAR(100) UNIQUE\n);\nCREATE TABLE forfattere (\n  id           INT AUTO_INCREMENT PRIMARY KEY,\n  fornavn      VARCHAR(100),\n  etternavn    VARCHAR(100),\n  født         YEAR,\n  nasjonalitet VARCHAR(50)\n);\nCREATE TABLE bøker (\n  isbn       VARCHAR(13) PRIMARY KEY,\n  tittel     VARCHAR(300) NOT NULL,\n  utgitt_år  YEAR,\n  sjanger_id INT,\n  forlag_id  INT,\n  ant_eks    INT DEFAULT 1,\n  FOREIGN KEY (sjanger_id) REFERENCES sjangere(id),\n  FOREIGN KEY (forlag_id)  REFERENCES forlag(id)\n);\nCREATE TABLE bok_forfattere (\n  isbn         VARCHAR(13),\n  forfatter_id INT,\n  rolle        ENUM('Forfatter','Medforfatter','Oversetter') DEFAULT 'Forfatter',\n  PRIMARY KEY (isbn, forfatter_id),\n  FOREIGN KEY (isbn)         REFERENCES bøker(isbn) ON DELETE CASCADE,\n  FOREIGN KEY (forfatter_id) REFERENCES forfattere(id)\n);\nCREATE TABLE lånere (\n  id     INT AUTO_INCREMENT PRIMARY KEY,\n  navn   VARCHAR(100) NOT NULL,\n  epost  VARCHAR(200) UNIQUE NOT NULL,\n  postnr CHAR(4),\n  status ENUM('Aktiv','Suspendert') DEFAULT 'Aktiv'\n);\nCREATE TABLE utlån (\n  id        INT AUTO_INCREMENT PRIMARY KEY,\n  låner_id  INT NOT NULL,\n  isbn      VARCHAR(13) NOT NULL,\n  dato      DATETIME DEFAULT CURRENT_TIMESTAMP,\n  forfaller DATE NOT NULL,\n  returdato DATETIME DEFAULT NULL,\n  FOREIGN KEY (låner_id) REFERENCES lånere(id),\n  FOREIGN KEY (isbn)     REFERENCES bøker(isbn)\n);"},
+{label:"Steg 4 · Bok med forfattere",code:"SELECT b.tittel, b.utgitt_år,\n  GROUP_CONCAT(\n    CONCAT(f.fornavn, ' ', f.etternavn) SEPARATOR ', '\n  ) AS forfattere,\n  s.navn AS sjanger,\n  fl.navn AS forlag\nFROM bøker b\nJOIN bok_forfattere bf ON bf.isbn = b.isbn\nJOIN forfattere f      ON f.id = bf.forfatter_id\nJOIN sjangere s        ON s.id = b.sjanger_id\nJOIN forlag fl         ON fl.id = b.forlag_id\nGROUP BY b.isbn, b.tittel, b.utgitt_år, s.navn, fl.navn;"},
+{label:"Steg 5 · Aktive utlån",code:"SELECT l.navn AS låner, b.tittel, u.dato AS lånt,\n  u.forfaller,\n  CASE\n    WHEN u.forfaller < CURDATE() THEN 'Forfalt'\n    WHEN u.forfaller <= DATE_ADD(CURDATE(),INTERVAL 7 DAY) THEN 'Snart forfaller'\n    ELSE 'OK'\n  END AS status\nFROM utlån u\nJOIN lånere l ON l.id = u.låner_id\nJOIN bøker b  ON b.isbn = u.isbn\nWHERE u.returdato IS NULL\nORDER BY u.forfaller;"}
+]},
+{id:"er-flyselskap",cmd:"ER-modell: Flyselskap",cat:"er",catLabel:"ER-MODELL",
+desc:"Normaliser et flyselskap-system med flyvninger, passasjerer, fly og bookinger.",
+tags:["er","flyselskap","fly","passasjer","booking","flyvning","sete","flyplass"],
+difficulty:"advanced",related:["nrm-1nf","nrm-2nf","nrm-3nf"],
+steps:[
+{s:"<strong>0NF</strong> — Flat struktur med all info per booking"},
+{s:"<strong>1NF</strong> — Fjern gjentagende grupper (multiple passasjerer per booking)"},
+{s:"<strong>2NF</strong> — Skill flyvning, passasjer, sete fra booking"},
+{s:"<strong>3NF</strong> — Fjern transitive avhengigheter (flyplass→by, fly_type→kapasitet)"},
+{s:"<strong>Komplett schema</strong> — Realistisk flyselskap-database"}
+],
+examples:[
+{label:"Steg 0 · Unormalisert",code:"-- 0NF: alt i én tabell\n-- booking_id, dato,\n-- pass1_navn, pass1_pass, pass1_sete,\n-- pass2_navn, pass2_pass, pass2_sete,\n-- pass3_navn, pass3_pass, pass3_sete,\n-- flyvning_nr, avgang, ankomst,\n-- fra_kode, fra_by, fra_land,\n-- til_kode, til_by, til_land,\n-- fly_reg, fly_type, fly_kapasitet,\n-- pris\n-- Problemer:\n-- Gjentagende passasjerer\n-- Flyplass-info gjentas\n-- fly_type → fly_kapasitet (transitiv)"},
+{label:"Steg 1 · Etter 1NF",code:"-- 1NF: én rad per passasjer per booking\nCREATE TABLE booking_pass_1nf (\n  booking_id  INT,\n  dato        DATE,\n  pass_navn   VARCHAR(100),\n  pass_pass   VARCHAR(20),\n  pass_sete   VARCHAR(5),\n  flyvning_nr VARCHAR(10),\n  avgang      DATETIME,\n  fra_kode    CHAR(3),\n  fra_by      VARCHAR(100),\n  til_kode    CHAR(3),\n  til_by      VARCHAR(100),\n  fly_reg     VARCHAR(10),\n  fly_type    VARCHAR(50),\n  fly_kap     INT,\n  pris        DECIMAL(10,2),\n  PRIMARY KEY (booking_id, pass_pass)\n);"},
+{label:"Steg 2 · Etter 2NF",code:"-- 2NF: skill ut entiteter\nCREATE TABLE flyplasser_2nf (\n  kode CHAR(3) PRIMARY KEY,\n  by   VARCHAR(100),\n  land VARCHAR(100)\n);\nCREATE TABLE fly_2nf (\n  reg  VARCHAR(10) PRIMARY KEY,\n  type VARCHAR(50),  -- transitiv (3NF-brudd: type→kapasitet)\n  kap  INT\n);\nCREATE TABLE flyvninger_2nf (\n  nr       VARCHAR(10) PRIMARY KEY,\n  avgang   DATETIME,\n  ankomst  DATETIME,\n  fra_kode CHAR(3),\n  til_kode CHAR(3),\n  fly_reg  VARCHAR(10),\n  pris     DECIMAL(10,2),\n  FOREIGN KEY (fra_kode) REFERENCES flyplasser_2nf(kode),\n  FOREIGN KEY (til_kode) REFERENCES flyplasser_2nf(kode),\n  FOREIGN KEY (fly_reg)  REFERENCES fly_2nf(reg)\n);\nCREATE TABLE passasjerer_2nf (\n  pass_nr VARCHAR(20) PRIMARY KEY,\n  navn    VARCHAR(100)\n);\nCREATE TABLE bookinger_2nf (\n  id   INT AUTO_INCREMENT PRIMARY KEY,\n  dato DATE\n);\nCREATE TABLE booking_passasjerer_2nf (\n  booking_id INT,\n  pass_nr    VARCHAR(20),\n  sete       VARCHAR(5),\n  PRIMARY KEY (booking_id, pass_nr),\n  FOREIGN KEY (booking_id) REFERENCES bookinger_2nf(id),\n  FOREIGN KEY (pass_nr)    REFERENCES passasjerer_2nf(pass_nr)\n);"},
+{label:"Steg 3 · Etter 3NF (ferdig)",code:"-- 3NF: fly_type i egen tabell, flyplasser allerede skilt\nCREATE TABLE flytyper (\n  kode      VARCHAR(20) PRIMARY KEY,\n  navn      VARCHAR(100),\n  produsent VARCHAR(50),\n  kapasitet INT NOT NULL CHECK(kapasitet > 0)\n);\nCREATE TABLE land (\n  kode CHAR(2) PRIMARY KEY,\n  navn VARCHAR(100) NOT NULL\n);\nCREATE TABLE flyplasser (\n  kode      CHAR(3) PRIMARY KEY,\n  navn      VARCHAR(200),\n  by        VARCHAR(100),\n  land_kode CHAR(2),\n  FOREIGN KEY (land_kode) REFERENCES land(kode)\n);\nCREATE TABLE fly (\n  reg            VARCHAR(10) PRIMARY KEY,\n  flytype_kode   VARCHAR(20),\n  satt_i_drift   YEAR,\n  FOREIGN KEY (flytype_kode) REFERENCES flytyper(kode)\n);\nCREATE TABLE flyvninger (\n  nr       VARCHAR(10) PRIMARY KEY,\n  avgang   DATETIME NOT NULL,\n  ankomst  DATETIME NOT NULL,\n  fra_kode CHAR(3) NOT NULL,\n  til_kode CHAR(3) NOT NULL,\n  fly_reg  VARCHAR(10),\n  pris     DECIMAL(10,2) NOT NULL CHECK(pris >= 0),\n  status   ENUM('Planlagt','Boarding','Underveis','Landet','Kansellert') DEFAULT 'Planlagt',\n  FOREIGN KEY (fra_kode) REFERENCES flyplasser(kode),\n  FOREIGN KEY (til_kode) REFERENCES flyplasser(kode),\n  FOREIGN KEY (fly_reg)  REFERENCES fly(reg)\n);\nCREATE TABLE passasjerer (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  fornavn     VARCHAR(100),\n  etternavn   VARCHAR(100),\n  pass_nr     VARCHAR(20) UNIQUE,\n  fødsel      DATE,\n  epost       VARCHAR(200)\n);\nCREATE TABLE bookinger (\n  id          INT AUTO_INCREMENT PRIMARY KEY,\n  ref_kode    CHAR(6) UNIQUE,\n  flyvning_nr VARCHAR(10) NOT NULL,\n  bestilt_dato DATETIME DEFAULT CURRENT_TIMESTAMP,\n  status      ENUM('Aktiv','Kansellert') DEFAULT 'Aktiv',\n  FOREIGN KEY (flyvning_nr) REFERENCES flyvninger(nr)\n);\nCREATE TABLE booking_passasjerer (\n  booking_id   INT,\n  passasjer_id INT,\n  sete         VARCHAR(5),\n  bagasje_kg   DECIMAL(5,2) DEFAULT 0,\n  PRIMARY KEY (booking_id, passasjer_id),\n  FOREIGN KEY (booking_id)   REFERENCES bookinger(id) ON DELETE CASCADE,\n  FOREIGN KEY (passasjer_id) REFERENCES passasjerer(id),\n  UNIQUE (booking_id, sete)\n);"},
+{label:"Steg 4 · Komplett booking-spørring",code:"SELECT\n  b.ref_kode AS booking,\n  fv.nr AS flyvning,\n  fra.kode AS fra, fra.by AS fra_by,\n  til.kode AS til, til.by AS til_by,\n  fv.avgang, fv.ankomst,\n  ft.navn AS flytype,\n  CONCAT(p.fornavn,' ',p.etternavn) AS passasjer,\n  bp.sete, bp.bagasje_kg\nFROM bookinger b\nJOIN flyvninger fv          ON fv.nr = b.flyvning_nr\nJOIN flyplasser fra         ON fra.kode = fv.fra_kode\nJOIN flyplasser til         ON til.kode = fv.til_kode\nJOIN fly f                  ON f.reg = fv.fly_reg\nJOIN flytyper ft            ON ft.kode = f.flytype_kode\nJOIN booking_passasjerer bp ON bp.booking_id = b.id\nJOIN passasjerer p          ON p.id = bp.passasjer_id\nWHERE b.ref_kode = 'ABC123'\nORDER BY bp.sete;"},
+{label:"Steg 5 · Belegg per flyvning",code:"SELECT\n  fv.nr,\n  fra.kode AS fra, til.kode AS til,\n  ft.kapasitet AS plasser,\n  COUNT(bp.passasjer_id) AS solgt,\n  ft.kapasitet - COUNT(bp.passasjer_id) AS ledig,\n  ROUND(COUNT(bp.passasjer_id) / ft.kapasitet * 100, 1) AS belegg_pst\nFROM flyvninger fv\nJOIN fly f         ON f.reg = fv.fly_reg\nJOIN flytyper ft   ON ft.kode = f.flytype_kode\nJOIN flyplasser fra ON fra.kode = fv.fra_kode\nJOIN flyplasser til ON til.kode = fv.til_kode\nLEFT JOIN bookinger b ON b.flyvning_nr = fv.nr AND b.status='Aktiv'\nLEFT JOIN booking_passasjerer bp ON bp.booking_id = b.id\nWHERE fv.avgang BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 7 DAY)\nGROUP BY fv.nr, fra.kode, til.kode, ft.kapasitet\nORDER BY fv.avgang;"}
+]}
+];
+const SYN={
+  "join":["koble","kombinere","slå sammen"],"koble":["join"],"delete":["slett","fjern"],
+  "slett":["delete"],"insert":["sett inn","legg til"],"update":["oppdater","endre"],
+  "select":["hent","vis","velg"],"filter":["filtrer","where"],"group":["grupper"],
+  "count":["tell","antall"],"sum":["summer","total"],"avg":["gjennomsnitt","snitt"],
+  "rank":["ranger","rang"],"null":["tom","mangler"],"window":["vindu","over","partition"],
+  "running":["løpende","kumulativ"],"normal":["normalisering","1nf","2nf","3nf"],
+  "er":["er-modell","entitet","relasjon","diagram"],"operator":["operatorer","logisk","aritmetisk"],
+  "struktur":["struktur","oppbygging","syntaks","anatomi"],"index":["indeks","ytelse"],
+  "transaction":["transaksjon","commit","rollback"],"regexp":["regex","mønster"],
+  "json":["json","dokument"],"date":["dato","tid"],"string":["streng","tekst"]
+};
+const CATS=[
+  {id:"all",label:"Alle"},{id:"str",label:"📐 Struktur"},{id:"sel",label:"SELECT"},
+  {id:"dml",label:"DML"},{id:"join",label:"JOIN"},{id:"agg",label:"Aggregat"},
+  {id:"win",label:"Vindu"},{id:"cte",label:"CTE"},{id:"sub",label:"Delspørring"},
+  {id:"ddl",label:"DDL"},{id:"idx",label:"Indeks"},{id:"txn",label:"Transaksjon"},
+  {id:"op",label:"⚙ Operatorer"},{id:"fn",label:"Funksjoner"},
+  {id:"nrm",label:"📊 Normalisering"},{id:"er",label:"🗂 ER-modell"}
+];
+const DM={beginner:{d:1,c:"var(--green)"},intermediate:{d:2,c:"var(--amber)"},advanced:{d:3,c:"var(--red)"}};
+
+let activeCategory="all", activeDifficulty="all", activeEntry=null, searchTerm="";
+
+function lev(a,b){if(!a.length)return b.length;if(!b.length)return a.length;
+  const dp=Array.from({length:a.length+1},(_,i)=>[i]);
+  for(let j=1;j<=b.length;j++)dp[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
+    dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[a.length][b.length];
+}
+function fuz(t,txt){if(t.length<4)return false;
+  return txt.split(/\s+/).some(w=>w.length>=t.length-1&&lev(t,w)<=1);
+}
+function expand(toks){const out=new Set(toks);
+  for(const t of toks){(SYN[t]||[]).forEach(s=>s.split(/\s+/).forEach(w=>out.add(w)));}
+  return [...out];
+}
+function score(e,q){if(!q)return 1;
+  const ql=q.toLowerCase().trim(),raw=ql.split(/\s+/).filter(Boolean),tk=expand(raw);
+  const cmd=e.cmd.toLowerCase(),desc=e.desc.toLowerCase(),
+    tags=e.tags.join(' ').toLowerCase(),
+    when=(e.when||[]).join(' ').toLowerCase(),
+    cat=e.catLabel.toLowerCase(),
+    code=(e.examples||[]).map(x=>x.code).join(' ').toLowerCase(),
+    all=[cmd,desc,tags,when,cat,code].join(' ');
+  let s=0;
+  if(cmd.includes(ql))s+=20; if(tags.includes(ql))s+=15;
+  if(desc.includes(ql))s+=10; if(all.includes(ql))s+=5;
+  for(const t of raw){
+    if(cmd.includes(t))s+=12; if(e.tags.some(x=>x.includes(t)))s+=8;
+    if(desc.includes(t))s+=5; if(when.includes(t))s+=3;
+    if(code.includes(t))s+=2; if(cat.includes(t))s+=2;
+    if(fuz(t,cmd))s+=6; else if(fuz(t,tags))s+=4; else if(fuz(t,desc))s+=2;
+  }
+  for(const t of tk.filter(x=>!raw.includes(x))){
+    if(cmd.includes(t))s+=4; if(e.tags.some(x=>x.includes(t)))s+=3;
+    if(desc.includes(t))s+=2; if(all.includes(t))s+=1;
+  }
+  return s;
+}
+function isFuzzy(e,q){if(!q)return false;
+  const raw=q.toLowerCase().trim().split(/\s+/).filter(Boolean),
+    all=[e.cmd,e.desc,e.tags.join(' ')].join(' ').toLowerCase();
+  return raw.every(t=>!all.includes(t)&&fuz(t,all));
+}
+function filter(){
+  return DB.map(e=>({e,s:score(e,searchTerm)}))
+    .filter(({e,s})=>{
+      const cm=activeCategory==='all'||e.cat===activeCategory,
+        dm=activeDifficulty==='all'||e.difficulty===activeDifficulty,
+        sm=!searchTerm||s>0;
+      return cm&&dm&&sm;
+    }).sort((a,b)=>b.s-a.s).map(x=>x.e);
+}
+function highlight(t,q){if(!q)return t;
+  const ts=[...new Set(q.toLowerCase().trim().split(/\s+/).filter(Boolean))];
+  let r=t;
+  for(const tk of ts){const esc=tk.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    r=r.replace(new RegExp(`(${esc})`,'gi'),'<mark>$1</mark>');}
+  return r;
+}
+function diffDots(d){const m=DM[d];if(!m)return '';
+  let h='<div class="dd">';
+  for(let i=1;i<=3;i++){
+    h+=`<span class="ddot" style="background:${i<=m.d?m.c:'var(--bg4)'}"></span>`;
+  }
+  return h+'</div>';
+}
+function renderFilters(){
+  const w=document.getElementById('filters');
+  let h=CATS.map(c=>`<button class="fb${activeCategory===c.id?' act':''}" data-cat="${c.id}">${c.label}</button>`).join('');
+  h+='<div class="fdiv"></div>';
+  h+=[
+    {id:'all',label:'Alle nivå',cls:''},
+    {id:'beginner',label:'⬤ Nybegynner',cls:'d1'},
+    {id:'intermediate',label:'⬤⬤ Mellomnivå',cls:'d2'},
+    {id:'advanced',label:'⬤⬤⬤ Avansert',cls:'d3'}
+  ].map(d=>`<button class="fb ${d.cls}${activeDifficulty===d.id?' act':''}" data-diff="${d.id}">${d.label}</button>`).join('');
+  w.innerHTML=h;
+  w.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{
+    activeCategory=b.dataset.cat; renderFilters(); renderAll();
+  }));
+  w.querySelectorAll('[data-diff]').forEach(b=>b.addEventListener('click',()=>{
+    activeDifficulty=b.dataset.diff; renderFilters(); renderAll();
+  }));
+}
+function renderSidebar(es){
+  const sb=document.getElementById('sidebar');
+  const groups={};
+  CATS.slice(1).forEach(c=>{groups[c.id]=[];});
+  es.forEach(e=>{if(groups[e.cat])groups[e.cat].push(e);});
+  let h='';
+  for(const [cid,items] of Object.entries(groups)){
+    if(!items.length)continue;
+    const lbl=CATS.find(c=>c.id===cid)?.label||cid;
+    h+=`<div class="sbs"><div class="sbt">${lbl}</div>`;
+    for(const e of items){
+      h+=`<div class="sbi${activeEntry===e.id?' act':''}" data-id="${e.id}">
+        <span class="sbn">${e.cmd}</span>${diffDots(e.difficulty)}</div>`;
+    }
+    h+='</div>';
+  }
+  sb.innerHTML=h;
+  sb.querySelectorAll('.sbi').forEach(it=>it.addEventListener('click',()=>{
+    const el=document.querySelector(`.entry[data-id="${it.dataset.id}"]`);
+    if(el){if(!el.classList.contains('exp'))el.classList.add('exp');
+      el.scrollIntoView({behavior:'smooth',block:'start'});
+      activeEntry=it.dataset.id;
+      document.querySelectorAll('.sbi').forEach(s=>s.classList.toggle('act',s.dataset.id===activeEntry));}
+  }));
+}
+function buildCode(c){
+  const kws=['SELECT','FROM','WHERE','AND','OR','NOT','XOR','INSERT','INTO','VALUES','UPDATE','SET','DELETE','JOIN','INNER','LEFT','RIGHT','CROSS','ON','GROUP','BY','ORDER','HAVING','LIMIT','OFFSET','DISTINCT','AS','UNION','ALL','EXISTS','IN','BETWEEN','LIKE','RLIKE','REGEXP','IS','NULL','CASE','WHEN','THEN','ELSE','END','WITH','RECURSIVE','CREATE','TABLE','ALTER','DROP','ADD','COLUMN','INDEX','VIEW','TRUNCATE','BEGIN','COMMIT','ROLLBACK','START','TRANSACTION','SAVEPOINT','OVER','PARTITION','ROWS','RANGE','PRECEDING','FOLLOWING','UNBOUNDED','CURRENT','ROW','CONSTRAINT','PRIMARY','KEY','FOREIGN','REFERENCES','UNIQUE','CHECK','DEFAULT','AUTO_INCREMENT','INTERVAL','TEMPORARY','EXPLAIN','ANALYZE','CAST','BINARY','DESC','ASC','MODIFY','RENAME','TO','IGNORE','REPLACE','READ','ONLY','FOR','UPDATE','SHOW','VARIABLES','LIKE','USE','DATABASE','ENUM','TINYINT','INT','BIGINT','VARCHAR','TEXT','DATE','DATETIME','TIMESTAMP','DECIMAL','CHAR','YEAR','MONTH','DAY','HOUR','MINUTE','SECOND','BIT','MOD','DIV','RESTRICT','CASCADE','NO','ACTION','FULLTEXT','MATCH','AGAINST','BOOLEAN','MODE','GENERATED','VIRTUAL','STORED','ENGINE','InnoDB'];
+  const fns=['COUNT','SUM','AVG','MIN','MAX','ROW_NUMBER','RANK','DENSE_RANK','NTILE','LAG','LEAD','FIRST_VALUE','LAST_VALUE','PERCENT_RANK','COALESCE','IFNULL','NULLIF','IF','CONCAT','CONCAT_WS','SUBSTRING','LENGTH','CHAR_LENGTH','UPPER','LOWER','TRIM','LTRIM','RTRIM','REPLACE','LEFT','RIGHT','LOCATE','POSITION','LPAD','RPAD','FORMAT','YEAR','MONTH','DAY','DATEDIFF','DATE_ADD','DATE_SUB','DATE_FORMAT','STR_TO_DATE','TIMESTAMPDIFF','EXTRACT','NOW','CURDATE','CURTIME','CURRENT_TIMESTAMP','ROUND','FLOOR','CEIL','CEILING','ABS','SQRT','POWER','POW','MOD','TRUNCATE','RAND','GREATEST','LEAST','SIGN','STDDEV','VARIANCE','BIT_COUNT','GROUPING','ROW_COUNT','LAST_INSERT_ID','VALUES','REGEXP_REPLACE','REGEXP_SUBSTR','JSON_EXTRACT','JSON_VALUE','JSON_UNQUOTE','JSON_OBJECT','JSON_ARRAY','QUARTER','ISNULL','UUID','MD5','SHA1','HEX','UNHEX','REPEAT','REVERSE','SPACE','UNIX_TIMESTAMP','FROM_UNIXTIME'];
+  let r=c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/--[^\n]*/g,m=>`<span class="cmt">${m}</span>`)
+    .replace(/'([^']*)'/g,'<span class="str">\'$1\'</span>')
+    .replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');
+  fns.forEach(f=>{r=r.replace(new RegExp(`\\b(${f})(?=\\s*\\()`,'g'),'<span class="fn">$1</span>');});
+  kws.forEach(k=>{r=r.replace(new RegExp(`\\b(${k})\\b`,'g'),'<span class="kw">$1</span>');});
+  return r;
+}
+function renderEntries(es){
+  const c=document.getElementById('content');
+  if(!es.length){c.innerHTML='<div class="empty"><div class="ei">⊘</div><div class="et">Ingen resultater</div></div>';return;}
+  let h='';
+  for(const e of es){
+    const fz=searchTerm&&isFuzzy(e,searchTerm);
+    const rels=(e.related||[]).map(rid=>{const r=DB.find(x=>x.id===rid);
+      return r?`<span class="relchip" data-goto="${rid}">${r.cmd}</span>`:'';}).join('');
+    const pfs=(e.pitfalls||[]).map(p=>`<div class="pfitem"><span>⚠</span>${p}</div>`).join('');
+    const stps=(e.steps||[]).map((s,i)=>`<div class="step"><div class="stepn">${i+1}</div><div class="stept">${s.s||s}</div></div>`).join('');
+    h+=`<div class="entry" data-id="${e.id}"><div class="eh">
+      <div class="el"><span class="badge cat-${e.cat}">${e.catLabel}</span></div>
+      <div class="em"><div class="etitle">${highlight(e.cmd,searchTerm)}${diffDots(e.difficulty)}${fz?'<span class="fuzz">Fuzzy</span>':''}</div>
+        <div class="edesc">${highlight(e.desc,searchTerm)}</div>
+        <div class="etags">${e.tags.slice(0,6).map(t=>`<span class="tag">${highlight(t,searchTerm)}</span>`).join('')}</div></div>
+      <span class="earr">▶</span></div>
+      <div class="ebody">`;
+    if(e.theory)h+=`<div class="es"><div class="esl">Teori</div><div class="theory">${e.theory}</div></div>`;
+    if(stps)h+=`<div class="es"><div class="esl">Steg-for-steg</div><div class="steps">${stps}</div></div>`;
+    if(e.when)h+=`<div class="es"><div class="esl">Når brukes det</div><div class="wl"><ul>${e.when.map(w=>`<li>${w}</li>`).join('')}</ul></div></div>`;
+    if(e.examples&&e.examples.length){
+      h+=`<div class="es"><div class="esl">Eksempler (${e.examples.length})</div>`;
+      for(const ex of e.examples){h+=`<div class="exlbl">${ex.label}</div>
+        <pre><button class="cpbtn" onclick="cp(this)">Kopier</button>${buildCode(ex.code)}</pre>`;}
+      h+=`</div>`;
+    }
+    if(rels)h+=`<div class="es"><div class="esl">Relatert</div><div class="relwrap">${rels}</div></div>`;
+    if(pfs)h+=`<div class="es"><div class="esl">Vanlige fallgruver</div><div class="pflist">${pfs}</div></div>`;
+    if(e.note)h+=`<div class="es"><div class="notebox">💡 ${e.note}</div></div>`;
+    h+=`</div></div>`;
+  }
+  c.innerHTML=h;
+  c.querySelectorAll('.entry').forEach(card=>{
+    card.querySelector('.eh').addEventListener('click',()=>{
+      card.classList.toggle('exp');
+      activeEntry=card.dataset.id;
+      document.querySelectorAll('.sbi').forEach(s=>s.classList.toggle('act',s.dataset.id===activeEntry));
+    });
+  });
+  c.querySelectorAll('.relchip').forEach(rc=>rc.addEventListener('click',ev=>{
+    ev.stopPropagation();const rid=rc.dataset.goto;
+    let t=document.querySelector(`.entry[data-id="${rid}"]`);
+    if(!t){activeCategory='all';activeDifficulty='all';searchTerm='';
+      document.getElementById('search').value='';renderFilters();renderAll();
+      t=document.querySelector(`.entry[data-id="${rid}"]`);}
+    if(t){t.classList.add('exp');t.scrollIntoView({behavior:'smooth',block:'start'});
+      activeEntry=rid;
+      document.querySelectorAll('.sbi').forEach(s=>s.classList.toggle('act',s.dataset.id===rid));}
+  }));
+}
+function renderAll(){
+  const es=filter();
+  document.getElementById('count').textContent=`${es.length} ${es.length===1?'resultat':'resultater'}`;
+  renderSidebar(es);renderEntries(es);
+}
+function cp(b){
+  const code=b.parentElement.innerText.replace(/^Kopier\n?/,'');
+  navigator.clipboard.writeText(code).then(()=>{
+    b.textContent='Kopiert!';b.classList.add('ok');
+    setTimeout(()=>{b.textContent='Kopier';b.classList.remove('ok');},1500);
+  });
+}
+const RK='mysql_recent';
+function getRecent(){try{return JSON.parse(localStorage.getItem(RK)||'[]');}catch{return [];}}
+function saveRecent(t){if(!t||t.length<2)return;
+  let a=getRecent().filter(x=>x!==t);a.unshift(t);a=a.slice(0,6);
+  try{localStorage.setItem(RK,JSON.stringify(a));}catch{}}
+function renderRecent(){
+  const a=getRecent(),w=document.getElementById('rw'),c=document.getElementById('rchips');
+  if(!a.length){w.classList.remove('vis');return;}
+  w.classList.add('vis');
+  c.innerHTML=a.map(t=>`<span class="rchip" data-term="${t}">${t}</span>`).join('');
+  c.querySelectorAll('.rchip').forEach(ch=>ch.addEventListener('click',()=>{
+    searchTerm=ch.dataset.term;document.getElementById('search').value=searchTerm;renderAll();
+  }));
+}
+document.getElementById('rclear').addEventListener('click',()=>{
+  try{localStorage.removeItem(RK);}catch{}renderRecent();
+});
+document.querySelectorAll('.tip').forEach(t=>{
+  const term=t.querySelector('span')?.textContent?.replace(/«|»/g,'').trim();
+  if(term)t.addEventListener('click',()=>{
+    searchTerm=term;document.getElementById('search').value=term;renderAll();
+    document.getElementById('content').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+let st;
+document.getElementById('search').addEventListener('input',e=>{
+  searchTerm=e.target.value.trim();renderAll();
+  clearTimeout(st);st=setTimeout(()=>{if(searchTerm)saveRecent(searchTerm);},1200);
+});
+document.getElementById('search').addEventListener('focus',renderRecent);
+document.addEventListener('keydown',e=>{
+  const s=document.getElementById('search');
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();s.focus();s.select();}
+  if(e.key==='Escape'&&document.activeElement===s){
+    if(searchTerm){searchTerm='';s.value='';renderAll();}else{s.blur();}
+  }
+});
+renderFilters();renderAll();renderRecent();
+</script></body></html>
